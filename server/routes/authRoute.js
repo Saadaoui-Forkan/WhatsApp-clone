@@ -1,0 +1,12 @@
+const router = require('express').Router()
+const { registerUser } = require('../controllers/authCtr')
+const { check } = require('express-validator')
+
+// /api/auth/register
+router.post("/register", [
+    check('name', 'Name is required with less than 20 characters').not().isEmpty().isLength({max: 20}),
+    check('username', 'Name is required with less than 20 characters').not().isEmpty().isLength({max: 20}),
+    check('password', 'Please enter a password with 6 or more characters').isLength({min: 6}),
+], registerUser);
+
+module.exports = router;
