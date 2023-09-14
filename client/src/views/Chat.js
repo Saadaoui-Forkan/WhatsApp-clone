@@ -4,7 +4,7 @@ import Error from '../components/Error'
 function Chat() {
   return (
     <div>
-        Chat
+        صفحة المحادثات
 
         <Error error = "يوجد خطأ"/>
 
