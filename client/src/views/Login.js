@@ -13,8 +13,7 @@ function Register({ error }) {
         setFormData({...formData, [e.target.name]: e.target.value})
     }
     const onSubmit = async e => {
-        e.preventDefault()
-        console.log("success")
+      e.preventDefault()
     }
   return (
     <Card className="auth col-lg-3 col-sm-6">

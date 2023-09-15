@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken')
 
-const ModelSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -26,7 +26,7 @@ const ModelSchema = new mongoose.Schema({
 })
 
 // Get User Profile Data
-ModelSchema.methods.getData = function(){
+UserSchema.methods.getData = function(){
     return {
         id: this._id,
         name: this.name,
@@ -37,11 +37,13 @@ ModelSchema.methods.getData = function(){
 };
 
 // Generate User Tocken
-ModelSchema.methods.signJwt = function(){
+UserSchema.methods.signJwt = function(){
     let data = this.getData();
     data.token = jwt.sign(data, process.env.JWT_SECRET);
     return data;
 };
 
-const Model = mongoose.model('User', ModelSchema);
-module.exports = Model;
+const User = mongoose.model('User', UserSchema)
+module.exports = {
+    User,
+}
