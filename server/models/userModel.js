@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -36,7 +37,7 @@ UserSchema.methods.getData = function(){
     };
 };
 
-// Generate User Tocken
+// Generate User Token
 UserSchema.methods.signJwt = function(){
     let data = this.getData();
     data.token = jwt.sign(data, process.env.JWT_SECRET);
