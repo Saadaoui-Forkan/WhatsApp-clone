@@ -1,24 +1,34 @@
 import React, { useState } from 'react'
 import { Card, Input, Button, Form } from 'reactstrap'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Error from '../components/Error';
+import axios from 'axios'
+import Auth from '../Auth'
 
-function Register({ error }) {
-    const [formData, setFormData] = useState({
-        name: '',
-        password: ''
-    });
-    const { name, password } = formData
-    const onChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value})
-    }
-    const onSubmit = async e => {
-      e.preventDefault()
-    }
+function Login() {
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+      name: '',
+      password: ''
+  });
+  const { name, password } = formData
+  const onChange = (e) => {
+      setFormData({...formData, [e.target.name]: e.target.value})
+  }
+  const onSubmit = async e => {
+    e.preventDefault()  
+    axios.post('/api/auth/login', formData)
+    .then(res => {
+      Auth.login(res.data)
+      navigate("/")
+    })
+    .catch(error => setError(error.response.data.message))
+  }
   return (
     <Card className="auth col-lg-3 col-sm-6">
       <Form onSubmit={onSubmit}>
-        <img src={"Logo"} alt="" width="200" />
+        <img src="" alt="" width="200" />
         <h5 className="mb-4"> تسجيل الدخول</h5>
         <Error error={error} />
         <Input
@@ -50,4 +60,4 @@ function Register({ error }) {
   );
 }
 
-export default Register
+export default Login
