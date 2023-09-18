@@ -36,13 +36,6 @@ UserSchema.methods.getData = function(){
     };
 };
 
-// Generate User Token
-UserSchema.methods.signJwt = function(){
-    let data = this.getData();
-    data.token = jwt.sign(data, process.env.JWT_SECRET);
-    return data;
-};
-
 const User = mongoose.model('User', UserSchema)
 module.exports = {
     User,

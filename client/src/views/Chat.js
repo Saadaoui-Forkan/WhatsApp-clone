@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Error from '../components/Error'
 import MessageForm from '../components/chat/MessageForm';
 import ChatHeader from '../components/chat/ChatHeader';
@@ -8,30 +8,47 @@ import EditProfile from '../components/side/EditProfile';
 import UserProfile from '../components/side/UserProfile';
 import Messages from '../components/chat/Messages'
 import { Row, Spinner } from 'reactstrap';
+import Axios from 'axios'
 
 
 function Chat() {
-  const obj = {
-    user: { id: "1", name: "عبدالله" },
-    message: [
-      { sender: "1", receiver: "2", content: "ككيف حالك" },
-      { sender: "1", receiver: "2", content: "ككيف حالك" },
-      { sender: "3", receiver: "1", content: "ككيف حالك" },
-      { sender: "1", receiver: "3", content: "ككيف حالك" },
-      { sender: "1", receiver: "2", content: "ككيف حالك" },
-      { sender: "3", receiver: "2", content: "ككيف حالك" },
-      { sender: "2", receiver: "1", content: "ككيف حالك" },
-    ],
-    contact: [
-      { id: "2", name: "محمد" },
-      { id: "3", name: "أحمد" },
-    ]
+  // const [user, setUser] = useState(null)
+  const user = {
+    _id: "6505686216632b776111b914",
+    name: "Ahmed"
   }
+  const [conversations, setConversations] = useState([])
+
+  useEffect(() => {
+    const fetchCurrentUser = async() => {
+      try {
+        Axios.get('/api/auth')
+        .then(res => console.log(res.data))
+        // console.log(response.data)
+      } catch (error) {
+        console.log("error")
+      }
+    }
+    fetchCurrentUser()
+  }, [])
+
+  // useEffect(() => {
+  //   const getConversations = async() => {
+  //     try {
+  //       const response = await axios.get('/api/conversations'+user._id)
+  //       console.log(response)
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  // getConversations()
+  // }, [user._id])
+  
   return (
     <Row className="h-100">
       <div id="contacts-section" className="col-6 col-md-4">
         <ContactHeader 
-          user={obj.user.name} 
+          // user={obj.user.name} 
           // toggle={toggleProfile} 
         />
         <Contacts
@@ -52,7 +69,7 @@ function Chat() {
       </div>
       <div id="messages-section" className="col-6 col-md-8">
         <ChatHeader
-          contact={obj.contact}
+          // contact={obj.contact}
           // typing={this.state.typing}
           // toggle={this.userProfileToggle}
           // logout={logout}

@@ -1,6 +1,7 @@
 const { User } = require('../models/User')
 const bcrypt = require('bcryptjs')
 const {  validationResult } = require('express-validator')
+const jwt = require('jsonwebtoken')
 
 const registerUser = async(req,res) => {
 
@@ -56,22 +57,34 @@ const loginUser = async(req,res) => {
         }
 
         // Generate Token
-        const token = user.signJwt()
-
-        res.status(200).send({
-            _id: user._id,
-            name: user.name,
-            token
+        const payload = {
+            user: {
+                id: user.id
+            }
+        }
+        jwt.sign(payload, process.env.JWT_SECRET, (err, token) => {
+            if (err) throw err
+            res.json({token})
         })
-
-
     } catch (error) {
         console.log(error)
         res.status(500).send("Server error");  
     }
 }
 
+// Get Me
+const getCurrentUser = async(req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.json(user)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("Server error"); 
+    }
+}
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser, 
+    getCurrentUser
 }
