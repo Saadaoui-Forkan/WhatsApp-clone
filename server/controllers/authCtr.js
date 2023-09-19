@@ -29,7 +29,7 @@ const registerUser = async(req,res) => {
         });
         await user.save();
 
-        res.send(user.signJwt());
+        res.send(user);
         
     } catch (err) {
         console.log(err)
@@ -46,12 +46,14 @@ const loginUser = async(req,res) => {
     const { name, password } = req.body
     try {
         let user = await User.findOne({ name })
+        // console.log({user})
         if(!user) {
             return res.status(400).json({ message: "الرجاء التحقق من إسم المستخدم و كلمة المرور"})
         }
 
         // compare password
         const isMatch = await bcrypt.compare(password, user.password)
+        console.log(isMatch)
         if (!isMatch) {
             return res.status(400).json({ message: "الرجاء التحقق من إسم المستخدم و كلمة المرور" });
         }
@@ -64,7 +66,14 @@ const loginUser = async(req,res) => {
         }
         jwt.sign(payload, process.env.JWT_SECRET, (err, token) => {
             if (err) throw err
-            res.json({token})
+            res.json({
+                success: true,
+                data: {
+                    id: user.id,
+                    name: user.name,
+                    token
+                }
+            })
         })
     } catch (error) {
         console.log(error)

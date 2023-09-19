@@ -21,7 +21,7 @@ function Register() {
     e.preventDefault()  
     axios.post('/api/auth/register', formData)
     .then(res => {
-      Auth.login(res.data)
+      // Auth.login(res.data)
       navigate("/")
     })
     .catch(error => setError(error.response.data.message))

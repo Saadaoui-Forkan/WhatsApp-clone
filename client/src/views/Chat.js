@@ -8,41 +8,23 @@ import EditProfile from '../components/side/EditProfile';
 import UserProfile from '../components/side/UserProfile';
 import Messages from '../components/chat/Messages'
 import { Row, Spinner } from 'reactstrap';
-import Axios from 'axios'
-
+import axios from 'axios'
 
 function Chat() {
-  // const [user, setUser] = useState(null)
-  const user = {
-    _id: "6505686216632b776111b914",
-    name: "Ahmed"
-  }
-  const [conversations, setConversations] = useState([])
-
   useEffect(() => {
-    const fetchCurrentUser = async() => {
-      try {
-        Axios.get('/api/auth')
+    const getUser = async() => {
+      const user = JSON.parse(localStorage.getItem('user'))
+        await axios.get('/api/auth', {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': user.data.token
+          }})
         .then(res => console.log(res.data))
-        // console.log(response.data)
-      } catch (error) {
-        console.log("error")
-      }
+        .catch(err => console.log(err, "err"))
     }
-    fetchCurrentUser()
+    getUser()
   }, [])
-
-  // useEffect(() => {
-  //   const getConversations = async() => {
-  //     try {
-  //       const response = await axios.get('/api/conversations'+user._id)
-  //       console.log(response)
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  // getConversations()
-  // }, [user._id])
+  
   
   return (
     <Row className="h-100">

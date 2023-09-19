@@ -20,6 +20,7 @@ function Login() {
     e.preventDefault()  
     axios.post('/api/auth/login', formData)
     .then(res => {
+      console.log(res)
       Auth.login(res.data)
       navigate("/")
     })
