@@ -11,20 +11,21 @@ import { Row, Spinner } from 'reactstrap';
 import axios from 'axios'
 
 function Chat() {
+  const [currentUser, setCurrentUser] = useState(null)
   useEffect(() => {
     const getUser = async() => {
       const user = JSON.parse(localStorage.getItem('user'))
         await axios.get('/api/auth', {
           headers: {
             'Content-Type': 'application/json',
-            'x-auth-token': user.data.token
+            'x-auth-token': user?.data.token
           }})
-        .then(res => console.log(res.data))
+        .then(res => setCurrentUser(res.data))
         .catch(err => console.log(err, "err"))
     }
     getUser()
   }, [])
-  
+  console.log(currentUser)
   
   return (
     <Row className="h-100">
@@ -51,10 +52,7 @@ function Chat() {
       </div>
       <div id="messages-section" className="col-6 col-md-8">
         <ChatHeader
-          // contact={obj.contact}
-          // typing={this.state.typing}
-          // toggle={this.userProfileToggle}
-          // logout={logout}
+          user = {currentUser}
         />
         <Messages />
         <MessageForm 

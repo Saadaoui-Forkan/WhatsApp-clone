@@ -3,17 +3,19 @@ import { Row, DropdownItem, DropdownMenu, DropdownToggle, Nav, UncontrolledDropd
 import moment from 'moment';
 import Avatar from '../Avatar';
 
-function ChatHeader(props) {
+function ChatHeader({ user }) {
   return (
     <div>
         <Row className="heading m-0">
-            <div onClick={props.toggle}>
+            <div 
+                // onClick={props.toggle}
+            >
                 <Avatar 
                     // src={props.contact.avatar} 
                 />
             </div>
             <div className="text-right">
-                <div>{props.contact ? props.contact.name : ''}</div>
+                <div>{user ? user.name : ''}</div>
                 {/* <small>{status()}</small> */}
            </div>
             <Nav className="mr-auto" navbar>
