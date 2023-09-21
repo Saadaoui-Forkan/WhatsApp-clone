@@ -92,8 +92,23 @@ const getCurrentUser = async(req, res) => {
     }
 }
 
+// Get all users except the connected user
+const getUsers = async(req,res) => {
+    try {
+        const users = await User.find({ _id: { $ne: req.params.id } }).select([
+            "name",
+            "username",
+        ]);
+        res.json(users);
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("Server error"); 
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser, 
-    getCurrentUser
+    getCurrentUser,
+    getUsers
 }

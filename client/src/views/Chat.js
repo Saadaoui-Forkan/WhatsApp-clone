@@ -12,6 +12,9 @@ import axios from 'axios'
 
 function Chat() {
   const [currentUser, setCurrentUser] = useState(null)
+  const [users, setUsers] = useState([])
+
+  // fetch current user
   useEffect(() => {
     const getUser = async() => {
       const user = JSON.parse(localStorage.getItem('user'))
@@ -25,8 +28,20 @@ function Chat() {
     }
     getUser()
   }, [])
-  console.log(currentUser)
-  
+
+  // fetch users
+  useEffect(()=> {
+    const getUsers = async() => {
+      try {
+        const res = await axios.get(`/api/auth/allusers/`+currentUser?._id)
+        setUsers(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getUsers()
+  },[currentUser?._id])
+
   return (
     <Row className="h-100">
       <div id="contacts-section" className="col-6 col-md-4">
@@ -38,6 +53,7 @@ function Chat() {
           // contacts={this.state.contacts}
           // messages={this.state.messages}
           // onChatNavigate={this.onChatNavigate}
+          users = { users }
         />
         <UserProfile
           // contact={this.state.contact}

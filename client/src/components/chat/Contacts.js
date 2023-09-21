@@ -2,7 +2,7 @@ import React from 'react'
 import Contact from './Contact'
 import { Row, Input } from 'reactstrap'
 
-function Contacts() {
+function Contacts({ users }) {
   return (
     <Row>
     <div className="p-2 w-100">
@@ -14,7 +14,14 @@ function Contacts() {
         //   value={searchQuery}
         />
       </div>
-      <Contact/>
+      {
+        users.map((u, index) => (
+          <Contact
+            key = {index}
+            user = { u }
+          />
+        ))
+      }
     </div>
   </Row>
   )

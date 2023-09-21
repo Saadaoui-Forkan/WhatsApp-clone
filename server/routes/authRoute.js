@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { registerUser, loginUser, getCurrentUser } = require('../controllers/authCtr')
+const { registerUser, loginUser, getCurrentUser, getUsers } = require('../controllers/authCtr')
 const { check } = require('express-validator');
 const protect = require('../middlewares/authMiddleware');
 
@@ -18,5 +18,8 @@ router.post("/login", [
 
 // /api/auth
 router.get('/', protect, getCurrentUser)
+
+//  /api/auth/allusers/:userId
+router.get('/allusers/:id', getUsers)
 
 module.exports = router;
