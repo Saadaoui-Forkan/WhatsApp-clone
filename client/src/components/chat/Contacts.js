@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Contact from './Contact'
 import { Row, Input } from 'reactstrap'
 
 function Contacts({ users }) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const searchUser = users.filter(user => (
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ))
+  
   return (
     <Row>
     <div className="p-2 w-100">
@@ -10,12 +15,12 @@ function Contacts({ users }) {
         <Input
           className="search-input"
           placeholder="بحث عن جهات الاتصال"
-        //   onChange={e => setSearchQuery(e.target.value)}
-        //   value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          value={searchQuery}
         />
       </div>
       {
-        users.map((u, index) => (
+        searchUser.map((u, index) => (
           <Contact
             key = {index}
             user = { u }

@@ -4,13 +4,10 @@ import Chat from './views/Chat';
 import NotFound from './views/NotFound';
 import Register from './views/Register';
 import Login from './views/Login';
-import Auth from './Auth'
-import AppRoute from './AppRoute'
+import Auth from './Auth';
 
 function App() {
-  // useEffect(() => {
-  //   Auth.init();
-  // }, []);
+
   return (
     <Router>
       <Routes>

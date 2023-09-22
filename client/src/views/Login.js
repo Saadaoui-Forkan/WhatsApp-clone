@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Input, Button, Form } from 'reactstrap'
 import { Link, useNavigate } from 'react-router-dom';
 import Error from '../components/Error';
@@ -8,24 +8,27 @@ import Auth from '../Auth'
 function Login() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
       name: '',
       password: ''
-  });
+  })
+
   const { name, password } = formData
   const onChange = (e) => {
       setFormData({...formData, [e.target.name]: e.target.value})
   }
+  
   const onSubmit = async e => {
     e.preventDefault()  
     axios.post('/api/auth/login', formData)
     .then(res => {
-      console.log(res)
       Auth.login(res.data)
-      navigate("/")
+      navigate('/')
     })
     .catch(error => setError(error.response.data.message))
   }
+
   return (
     <Card className="auth col-lg-3 col-sm-6">
       <Form onSubmit={onSubmit}>

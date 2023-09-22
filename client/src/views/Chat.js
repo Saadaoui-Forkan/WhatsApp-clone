@@ -33,10 +33,10 @@ function Chat() {
   useEffect(()=> {
     const getUsers = async() => {
       try {
-        const res = await axios.get(`/api/auth/allusers/`+currentUser?._id)
+        const res = await axios.get(`/api/auth/allusers/${currentUser?._id}`)
         setUsers(res.data)
       } catch (error) {
-        console.log(error)
+        console.log(error.message)
       }
     }
     getUsers()
