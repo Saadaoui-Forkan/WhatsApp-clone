@@ -2,28 +2,17 @@ import React from 'react'
 import { Input } from "reactstrap";
 import moment from "moment";
 
-function MessageForm() {
-
-    const onChange = e => {
-        console.log("first")
-    }
-
-    const onKeyDown = e => {
-        console.log("first")
-    }
-
-    const onSend = e => {
-        console.log("first")
-    }
+function MessageForm({ msg, handleMsg, sendMessage }) {
+    // console.log(msg)
   return (
     <div id="send-message">
         <Input type="textarea" rows="1" 
-            onChange={onChange} 
-            onKeyDown={onKeyDown} 
-            // value={message} 
+            onChange={(e) => handleMsg(e.target.value)} 
+            // onKeyDown={onKeyDown} 
+            value={ msg } 
             placeholder="اكتب رسالتك هنا"
         />
-        <i className="fa fa-send text-muted px-3 send" onClick={onSend}/>
+        <i className="fa fa-send text-muted px-3 send" onClick={ sendMessage }/>
     </div>
   )
 }

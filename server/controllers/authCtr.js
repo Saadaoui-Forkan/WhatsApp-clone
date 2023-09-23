@@ -95,6 +95,9 @@ const getCurrentUser = async(req, res) => {
 // Get all users except the connected user
 const getUsers = async(req,res) => {
     const userId = req.params.id
+    if (!userId) {
+        return res.status(400).send("لا يوجد هنالك معرف في الطلب");
+    }
     try {
         const users = await User.find({ _id: { $ne: userId } }).select([
             "name",

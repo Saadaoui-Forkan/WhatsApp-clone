@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Error from '../components/Error'
 import MessageForm from '../components/chat/MessageForm';
 import ChatHeader from '../components/chat/ChatHeader';
 import ContactHeader from '../components/chat/ContactHeader';
@@ -9,10 +8,22 @@ import UserProfile from '../components/side/UserProfile';
 import Messages from '../components/chat/Messages'
 import { Row, Spinner } from 'reactstrap';
 import axios from 'axios'
+import Auth from '../Auth';
+import { useNavigate } from 'react-router-dom';
 
 function Chat() {
   const [currentUser, setCurrentUser] = useState(null)
   const [users, setUsers] = useState([])
+  const [receiver, setReceiver] = useState(undefined)
+  const [msg, setMsg] = useState('')
+
+  const navigate = useNavigate()
+
+  // useEffect(()=> {
+  //   if (!Auth.auth) {
+  //     navigate('/login')
+  //   }
+  // }, [])
 
   // fetch current user
   useEffect(() => {
@@ -42,38 +53,53 @@ function Chat() {
     getUsers()
   },[currentUser?._id])
 
+  // Define Sender 
+  const handleSenderId = (chat) => {
+    setReceiver(chat)
+  }
+  
+  // New Message
+  const handleMsg = (text) => {
+    setMsg(text)
+  }
+
+  // Send Message
+  const sendMessage = async () => {
+    try {
+      await axios.post('/api/messages/addmsg', {
+        from: currentUser?._id,
+        to: receiver?._id,
+        message: msg
+      })
+    } catch (error) {
+      return error.response.data
+    }
+  }
+
   return (
     <Row className="h-100">
       <div id="contacts-section" className="col-6 col-md-4">
         <ContactHeader 
-          // user={obj.user.name} 
-          // toggle={toggleProfile} 
         />
         <Contacts
-          // contacts={this.state.contacts}
-          // messages={this.state.messages}
-          // onChatNavigate={this.onChatNavigate}
           users = { users }
+          handleSenderId = { handleSenderId }
         />
         <UserProfile
-          // contact={this.state.contact}
-          // toggle={userProfileToggle}
-          // open={this.state.userProfile}
         />
         <EditProfile
-          // user={this.state.user}
-          // toggle={this.profileToggle}
-          // open={this.state.profile}
         />
       </div>
       <div id="messages-section" className="col-6 col-md-8">
         <ChatHeader
           user = {currentUser}
         />
-        <Messages />
-        <MessageForm 
-          // sender={sendMessage} 
-          // sendType={sendType} 
+        <Messages
+        />
+        <MessageForm  
+          msg = { msg }
+          handleMsg = { handleMsg } 
+          sendMessage = { sendMessage }
         />
       </div>
     </Row>

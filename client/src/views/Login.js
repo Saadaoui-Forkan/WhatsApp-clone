@@ -9,6 +9,12 @@ function Login() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
+  // useEffect(()=> {
+  //   if (Auth.auth) {
+  //     navigate('/')
+  //   }
+  // }, [])
+
   const [formData, setFormData] = useState({
       name: '',
       password: ''

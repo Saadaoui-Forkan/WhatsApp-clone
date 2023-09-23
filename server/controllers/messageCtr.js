@@ -2,10 +2,17 @@ const Message = require('../models/Message')
 
 // Add New Message
 const newMessage = async(req,res) => {
-    const newMsg = new Message(req.body)
     try {
-        const savedMessage = await newMsg.save()
-        res.status(200).json(savedMessage)
+        const {from, to, message} = req.body
+        const data = await Message.create({
+            message: { text: message },
+            users: [from, to],
+            sender: from
+        })
+        if (date) {
+            return res.json({ msg: "Message Added" })
+        }
+        return res.json({ msg: "Failed to add message" })
     } catch (error) {
         console.log(error)
         res.status(500).json(error)

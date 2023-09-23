@@ -9,6 +9,12 @@ function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState('')
 
+  // useEffect(()=> {
+  //   if (Auth.auth) {
+  //     navigate('/')
+  //   }
+  // }, [])
+
   const [formData, setFormData] = useState({
       name: '',
       username: '',

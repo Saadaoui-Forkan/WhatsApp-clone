@@ -24,17 +24,6 @@ const UserSchema = new mongoose.Schema({
     avatar: String,
 })
 
-// Get User Profile Data
-// UserSchema.methods.getData = function(){
-//     return {
-//         id: this._id,
-//         name: this.name,
-//         username: this.username,
-//         about: this.about,
-//         avatar: this.avatar
-//     };
-// };
-
 const User = mongoose.model('User', UserSchema)
 module.exports = {
     User,

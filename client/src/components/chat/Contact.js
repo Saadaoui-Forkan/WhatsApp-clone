@@ -3,14 +3,18 @@ import moment from 'moment';
 import Avatar from '../Avatar'
 import { Badge } from 'reactstrap';
 
-function Contact({  user }) {
+function Contact({  user, handleSenderId }) {
+    // const handleClick = (id) => {
+    //     console.log(id)
+    // }
   return (
-    <div className="contact">
+    <div className="contact" 
+        onClick={()=>handleSenderId(user)}
+    >
        <div>
            <Avatar 
                 src={user.avatar} 
-            />
-           {/* {contact.status === true ? <i className='fa fa-circle online' /> : ''} */}
+            /> 
        </div>
        <div className="w-50">
            <div className="name">{user.name}</div>
