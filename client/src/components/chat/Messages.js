@@ -1,7 +1,7 @@
 import React from 'react'
 import Message from './Message'
 
-function Messages({ messages }) {
+function Messages({ messages, scrollRef }) {
   return (
     <div id="messages">
       {
@@ -10,6 +10,7 @@ function Messages({ messages }) {
           <Message
             key = { key }
             message = { m }
+            scrollRef = { scrollRef }
           />
         ))
       }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import MessageForm from '../components/chat/MessageForm';
 import ChatHeader from '../components/chat/ChatHeader';
 import ContactHeader from '../components/chat/ContactHeader';
@@ -20,7 +20,8 @@ function Chat() {
   const [err, setErr] = useState('')
   const [messages, setMessages] = useState([])
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const scrollRef = useRef();
 
   // useEffect(()=> {
   //   if (!Auth.auth) {
@@ -99,8 +100,8 @@ function Chat() {
 
   useEffect(()=>{
     getMsgs()
-  }, [receiver, msg])
-  console.log(messages)
+  }, [receiver, msg ])
+
   return (
     <Row className="h-100">
       <div id="contacts-section" className="col-6 col-md-4">
@@ -123,6 +124,7 @@ function Chat() {
         />
         <Messages
           messages = {messages}
+          scrollRef = { scrollRef }
         />
         <Error error = {err} />
         <MessageForm  
