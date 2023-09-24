@@ -11,6 +11,7 @@ import { Row, Spinner } from 'reactstrap';
 import axios from 'axios'
 import Auth from '../Auth';
 import { useNavigate } from 'react-router-dom';
+import { io } from "socket.io-client"
 
 function Chat() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -19,9 +20,22 @@ function Chat() {
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
   const [messages, setMessages] = useState([])
+  // const [socket, setSocket] = useState(null)
 
   const navigate = useNavigate();
   const scrollRef = useRef();
+  const socket = useRef()
+
+  useEffect(()=>{
+    socket.current = io("ws://localhost:8900")
+  }, [])
+
+  useEffect(() => {
+    socket.current.emit("addUser", currentUser?._id);
+    socket.current.on("getUsers", users => {
+      console.log(users)
+    })
+  }, [currentUser])
 
   // useEffect(()=> {
   //   if (!Auth.auth) {
