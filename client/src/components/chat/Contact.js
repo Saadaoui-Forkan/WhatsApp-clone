@@ -1,12 +1,7 @@
 import React from 'react'
-import moment from 'moment';
 import Avatar from '../Avatar'
-import { Badge } from 'reactstrap';
 
-function Contact({  user, handleReceiver, currentUser }) {
-    // const handleClick = (id) => {
-    //     console.log(id)
-    // }
+function Contact({  user, handleReceiver }) {
   return (
     <div className="contact" 
         onClick={()=>handleReceiver(user)}
@@ -24,9 +19,7 @@ function Contact({  user, handleReceiver, currentUser }) {
        </div>
        <div className="flex-grow-1 text-left">
            <div className="small text-muted">
-               {/* {message ? moment(message.date).format("hh:mm a") : ''} */}
            </div>
-           {/* { unseen > 0 ? <Badge color="success">{unseen}</Badge> : ''} */}
        </div>
    </div>
   )

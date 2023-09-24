@@ -7,11 +7,8 @@ import EditProfile from '../components/side/EditProfile';
 import UserProfile from '../components/side/UserProfile';
 import Messages from '../components/chat/Messages';
 import Error from '../components/Error';
-import { Row, Spinner } from 'reactstrap';
+import { Row } from 'reactstrap';
 import axios from 'axios'
-import Auth from '../Auth';
-import { useNavigate } from 'react-router-dom';
-import { io } from "socket.io-client"
 
 function Chat() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -20,29 +17,9 @@ function Chat() {
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
   const [messages, setMessages] = useState([])
-  const [connected, setConnected] = useState(false)
 
-  const navigate = useNavigate();
-  const scrollRef = useRef();
-  const socket = useRef()
+  const scrollRef = useRef()
 
-  useEffect(()=>{
-    socket.current = io("ws://localhost:8900")
-  }, [])
-
-  useEffect(() => {
-    socket.current.on("connect", ()=> setConnected(true))
-    socket.current.on("disconnect", ()=> setConnected(false))
-
-  }, [currentUser])
-
-  // useEffect(()=> {
-  //   if (!Auth.auth) {
-  //     navigate('/login')
-  //   }
-  // }, [])
-
-  // fetch current user
   useEffect(() => {
     const getUser = async() => {
       const user = JSON.parse(localStorage.getItem('user'))
@@ -117,30 +94,22 @@ function Chat() {
 
   return (
     <Row className="h-100">
-      {
-        !connected ? (
-          <Spinner id="loader" color="success" />
-        ) : (
-          <>
-            <div id="contacts-section" className="col-6 col-md-4">
-              <ContactHeader currentUser={currentUser} />
-              <Contacts users={users} handleReceiver={handleReceiver} />
-              <UserProfile />
-              <EditProfile />
-            </div>
-            <div id="messages-section" className="col-6 col-md-8">
-              <ChatHeader users={users} receiver={receiver} />
-              <Messages messages={messages} scrollRef={scrollRef} />
-              <Error error={err} />
-              <MessageForm
-                msg={msg}
-                handleMsg={handleMsg}
-                sendMessage={sendMessage}
-              />
-            </div>
-          </>
-        )
-      }
+      <div id="contacts-section" className="col-6 col-md-4">
+        <ContactHeader currentUser={currentUser} />
+        <Contacts users={users} handleReceiver={handleReceiver} />
+        <UserProfile />
+        <EditProfile />
+      </div>
+      <div id="messages-section" className="col-6 col-md-8">
+        <ChatHeader users={users} receiver={receiver} />
+        <Messages messages={messages} scrollRef={scrollRef} />
+        <Error error={err} />
+        <MessageForm
+          msg={msg}
+          handleMsg={handleMsg}
+          sendMessage={sendMessage}
+        />
+      </div>
     </Row>
   );
 }

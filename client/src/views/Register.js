@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Card, Input, Button, Form } from 'reactstrap'
 import { Link, useNavigate } from 'react-router-dom';
 import Error from '../components/Error';
 import axios from 'axios'
-import Auth from '../Auth';
 
 function Register() {
-  const navigate = useNavigate();
   const [error, setError] = useState('')
 
-  // useEffect(()=> {
-  //   if (Auth.auth) {
-  //     navigate('/')
-  //   }
-  // }, [])
+  const navigate = useNavigate();
+
 
   const [formData, setFormData] = useState({
       name: '',
@@ -31,7 +26,7 @@ function Register() {
     e.preventDefault()  
     axios.post('/api/auth/register', formData)
     .then(res => {
-      Auth.login(res.data)
+      localStorage.setItem("user", JSON.stringify(res.data));
       navigate("/")
     })
     .catch(error => setError(error.response.data.message))

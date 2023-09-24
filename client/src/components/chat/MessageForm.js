@@ -1,6 +1,5 @@
 import React from 'react'
 import { Input } from "reactstrap";
-import moment from "moment";
 
 function MessageForm({ msg, handleMsg, sendMessage }) {
     // console.log(msg)
@@ -8,7 +7,6 @@ function MessageForm({ msg, handleMsg, sendMessage }) {
     <div id="send-message">
         <Input type="textarea" rows="1" 
             onChange={(e) => handleMsg(e.target.value)} 
-            // onKeyDown={onKeyDown} 
             value={ msg } 
             placeholder="اكتب رسالتك هنا"
         />

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Row, DropdownItem, DropdownMenu, DropdownToggle, Nav, UncontrolledDropdown} from "reactstrap";
-import moment from 'moment';
 import Avatar from '../Avatar';
 
 function ChatHeader({ receiver, users }) {
