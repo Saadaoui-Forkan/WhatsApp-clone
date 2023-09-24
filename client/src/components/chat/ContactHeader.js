@@ -2,14 +2,16 @@ import React from 'react'
 import Avatar from "../Avatar";
 import { Row } from "reactstrap";
 
-function ContactHeader({user, toggle}) {
+function ContactHeader({ currentUser }) {
   return (
     <Row className="heading">
        <Avatar 
-        // src={user.avatar} 
+        src={currentUser?.avatar} 
       />
-       <div>جهات الاتصال</div>
-       <div className="mr-auto nav-link" onClick={toggle}>
+       <div>
+          مرحبا <h6 className='contact-header-name'>{currentUser?.name}</h6>
+       </div>
+       <div className="mr-auto nav-link" >
             <i className="fa fa-bars" />
        </div>
    </Row>

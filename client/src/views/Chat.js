@@ -5,7 +5,8 @@ import ContactHeader from '../components/chat/ContactHeader';
 import Contacts from '../components/chat/Contacts';
 import EditProfile from '../components/side/EditProfile';
 import UserProfile from '../components/side/UserProfile';
-import Messages from '../components/chat/Messages'
+import Messages from '../components/chat/Messages';
+import Error from '../components/Error';
 import { Row, Spinner } from 'reactstrap';
 import axios from 'axios'
 import Auth from '../Auth';
@@ -16,6 +17,7 @@ function Chat() {
   const [users, setUsers] = useState([])
   const [receiver, setReceiver] = useState(undefined)
   const [msg, setMsg] = useState('')
+  const [err, setErr] = useState('')
 
   const navigate = useNavigate()
 
@@ -54,7 +56,7 @@ function Chat() {
   },[currentUser?._id])
 
   // Define Sender 
-  const handleSenderId = (chat) => {
+  const handleReceiver = (chat) => {
     setReceiver(chat)
   }
   
@@ -65,6 +67,13 @@ function Chat() {
 
   // Send Message
   const sendMessage = async () => {
+    if (msg.length === 0) {
+      setErr('الرجاء إدخال نص الرسالة')
+    }
+    if (!receiver) {
+      setErr('الرجاء تحديد المرسل إليه')
+
+    }
     try {
       await axios.post('/api/messages/addmsg', {
         from: currentUser?._id,
@@ -74,16 +83,19 @@ function Chat() {
     } catch (error) {
       return error.response.data
     }
+    setMsg('')
+    setErr('')
   }
 
   return (
     <Row className="h-100">
       <div id="contacts-section" className="col-6 col-md-4">
-        <ContactHeader 
+        <ContactHeader
+          currentUser = {currentUser} 
         />
         <Contacts
           users = { users }
-          handleSenderId = { handleSenderId }
+          handleReceiver = { handleReceiver }
         />
         <UserProfile
         />
@@ -92,10 +104,12 @@ function Chat() {
       </div>
       <div id="messages-section" className="col-6 col-md-8">
         <ChatHeader
-          user = {currentUser}
+          users = {users}
+          receiver = { receiver }
         />
         <Messages
         />
+        <Error error = {err} />
         <MessageForm  
           msg = { msg }
           handleMsg = { handleMsg } 

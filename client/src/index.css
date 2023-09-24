@@ -248,3 +248,8 @@
 	top: 45%;
 	left: 50%;
 }
+
+.contact-header-name {
+	font-weight: bold;
+	color: #00ce00;
+}

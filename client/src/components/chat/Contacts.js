@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Contact from './Contact'
 import { Row, Input } from 'reactstrap'
 
-function Contacts({ users, handleSenderId }) {
+function Contacts({ users, handleReceiver, currentUser }) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const searchUser = users.filter(user => (
@@ -25,7 +25,8 @@ function Contacts({ users, handleSenderId }) {
           <Contact
             key = {index}
             user = { u }
-            handleSenderId = { handleSenderId }
+            handleReceiver = { handleReceiver }
+            currentUser = { currentUser }
           />
         ))
       }

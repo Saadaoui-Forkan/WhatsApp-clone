@@ -7,9 +7,9 @@ const newMessage = async(req,res) => {
         const data = await Message.create({
             message: { text: message },
             users: [from, to],
-            sender: from
+            sender: from,
         })
-        if (date) {
+        if (data) {
             return res.json({ msg: "Message Added" })
         }
         return res.json({ msg: "Failed to add message" })

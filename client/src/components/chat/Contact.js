@@ -3,13 +3,13 @@ import moment from 'moment';
 import Avatar from '../Avatar'
 import { Badge } from 'reactstrap';
 
-function Contact({  user, handleSenderId }) {
+function Contact({  user, handleReceiver, currentUser }) {
     // const handleClick = (id) => {
     //     console.log(id)
     // }
   return (
     <div className="contact" 
-        onClick={()=>handleSenderId(user)}
+        onClick={()=>handleReceiver(user)}
     >
        <div>
            <Avatar 

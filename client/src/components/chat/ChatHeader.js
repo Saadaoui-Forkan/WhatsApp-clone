@@ -3,7 +3,9 @@ import { Row, DropdownItem, DropdownMenu, DropdownToggle, Nav, UncontrolledDropd
 import moment from 'moment';
 import Avatar from '../Avatar';
 
-function ChatHeader({ user }) {
+function ChatHeader({ receiver, users }) {
+    // Find Receiver Avatar
+    const receiverAvatar = users.find(u=> u._id === receiver?._id)
   return (
     <div>
         <Row className="heading m-0">
@@ -11,11 +13,11 @@ function ChatHeader({ user }) {
                 // onClick={props.toggle}
             >
                 <Avatar 
-                    // src={props.contact.avatar} 
+                    src={receiverAvatar?.avatar} 
                 />
             </div>
             <div className="text-right">
-                <div>{user ? user.name : ''}</div>
+                <div>{receiver ? receiver.name : ''}</div>
                 {/* <small>{status()}</small> */}
            </div>
             <Nav className="mr-auto" navbar>
