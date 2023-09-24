@@ -20,7 +20,7 @@ function Chat() {
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
   const [messages, setMessages] = useState([])
-  // const [socket, setSocket] = useState(null)
+  const [connected, setConnected] = useState(false)
 
   const navigate = useNavigate();
   const scrollRef = useRef();
@@ -31,10 +31,9 @@ function Chat() {
   }, [])
 
   useEffect(() => {
-    socket.current.emit("addUser", currentUser?._id);
-    socket.current.on("getUsers", users => {
-      console.log(users)
-    })
+    socket.current.on("connect", ()=> setConnected(true))
+    socket.current.on("disconnect", ()=> setConnected(false))
+
   }, [currentUser])
 
   // useEffect(()=> {
@@ -118,35 +117,30 @@ function Chat() {
 
   return (
     <Row className="h-100">
-      <div id="contacts-section" className="col-6 col-md-4">
-        <ContactHeader
-          currentUser = {currentUser} 
-        />
-        <Contacts
-          users = { users }
-          handleReceiver = { handleReceiver }
-        />
-        <UserProfile
-        />
-        <EditProfile
-        />
-      </div>
-      <div id="messages-section" className="col-6 col-md-8">
-        <ChatHeader
-          users = {users}
-          receiver = { receiver }
-        />
-        <Messages
-          messages = {messages}
-          scrollRef = { scrollRef }
-        />
-        <Error error = {err} />
-        <MessageForm  
-          msg = { msg }
-          handleMsg = { handleMsg } 
-          sendMessage = { sendMessage }
-        />
-      </div>
+      {
+        !connected ? (
+          <Spinner id="loader" color="success" />
+        ) : (
+          <>
+            <div id="contacts-section" className="col-6 col-md-4">
+              <ContactHeader currentUser={currentUser} />
+              <Contacts users={users} handleReceiver={handleReceiver} />
+              <UserProfile />
+              <EditProfile />
+            </div>
+            <div id="messages-section" className="col-6 col-md-8">
+              <ChatHeader users={users} receiver={receiver} />
+              <Messages messages={messages} scrollRef={scrollRef} />
+              <Error error={err} />
+              <MessageForm
+                msg={msg}
+                handleMsg={handleMsg}
+                sendMessage={sendMessage}
+              />
+            </div>
+          </>
+        )
+      }
     </Row>
   );
 }
