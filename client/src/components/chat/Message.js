@@ -4,10 +4,10 @@ import moment from 'moment'
 function Message({ message }) {
   let outgoing = 'true'
   return (
-    <div className={outgoing ? 'message-item' : 'message-item incoming'}>
+    <div className={message.fromSelf ? 'message-item' : 'message-item incoming'}>
     <div className="d-flex flex-row">
         <div className="body m-1 mr-2">
-            <div>message.content</div>
+            <div>{message.message}</div>
             <span className="small text-muted">
                 {/* {moment(message.date).format("hh:mm a | MMM D") } */}
             </span>

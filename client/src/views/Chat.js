@@ -18,6 +18,7 @@ function Chat() {
   const [receiver, setReceiver] = useState(undefined)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
+  const [messages, setMessages] = useState([])
 
   const navigate = useNavigate()
 
@@ -71,7 +72,7 @@ function Chat() {
       setErr('الرجاء إدخال نص الرسالة')
     }
     if (!receiver) {
-      setErr('الرجاء تحديد المرسل إليه')
+      setErr('الرجاء تحديد الطرف المرسل إليه')
 
     }
     try {
@@ -87,6 +88,19 @@ function Chat() {
     setErr('')
   }
 
+  // Show Messages Between Receiver And Sender
+  const getMsgs = async() => {
+    const response = await axios.post('/api/messages/getmsg', {
+      from: currentUser?._id,
+      to: receiver?._id
+    })
+    setMessages(response.data)
+  }
+
+  useEffect(()=>{
+    getMsgs()
+  }, [receiver, msg])
+  console.log(messages)
   return (
     <Row className="h-100">
       <div id="contacts-section" className="col-6 col-md-4">
@@ -108,6 +122,7 @@ function Chat() {
           receiver = { receiver }
         />
         <Messages
+          messages = {messages}
         />
         <Error error = {err} />
         <MessageForm  

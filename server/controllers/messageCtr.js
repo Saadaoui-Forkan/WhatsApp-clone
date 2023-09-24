@@ -22,12 +22,21 @@ const newMessage = async(req,res) => {
 // Get Messages
 const getMessages = async(req,res) => {
     try {
+        const { from, to } = req.body;
         const messages = await Message.find({
-            conversationId: req.params.conversationId
-        })
-        res.status(200).json(messages)
+          users: {
+            $all: [from, to],
+          },
+        }).sort({ updatedAt: 1 });
+        const projectedMessages = messages.map((msg) => {
+          return {
+            fromSelf: msg.sender.toString() === from,
+            message: msg.message.text,
+          };
+        });
+        res.json(projectedMessages);
     } catch (error) {
-        onsole.log(error)
+        console.log(error)
         res.status(500).json(error)
     }
 }

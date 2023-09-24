@@ -92,8 +92,9 @@
 	flex-direction: column!important;
 	display: flex!important;
 	padding: 0;
-	height: 100vh;
+	height: 90vh;
 	background: hsl(0, 0%, 80%);
+	overflow-y: scroll;
 }
 
 

@@ -1,12 +1,18 @@
 import React from 'react'
 import Message from './Message'
 
-function Messages() {
+function Messages({ messages }) {
   return (
     <div id="messages">
-        <Message/>
-        <Message/>
-        <Message/>
+      {
+        messages.map((m, key)=>(
+          // console.log(m)
+          <Message
+            key = { key }
+            message = { m }
+          />
+        ))
+      }
     </div>
   )
 }
