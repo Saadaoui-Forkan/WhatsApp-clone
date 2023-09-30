@@ -1,19 +1,16 @@
-const { User } = require('../models/User')
+const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const {  validationResult } = require('express-validator')
 const jwt = require('jsonwebtoken')
 
 const registerUser = async(req,res) => {
-
     // validation
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({errors: errors.array()})
     }
 
-    
     const { name, username, password } = req.body
-
     try {
         let user = await User.findOne({ name });
         if (user) {
