@@ -4,11 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import Error from '../components/Error';
 import axios from 'axios'
 
-function Register() {
+function Register({ setIsLoggedIn }) {
   const [error, setError] = useState('')
 
   const navigate = useNavigate();
-
 
   const [formData, setFormData] = useState({
       name: '',
@@ -26,8 +25,9 @@ function Register() {
     e.preventDefault()  
     axios.post('/api/auth/register', formData)
     .then(res => {
+      setIsLoggedIn(true)
       localStorage.setItem("user", JSON.stringify(res.data));
-      navigate("/")
+      navigate("/", { replace: true })
     })
     .catch(error => setError(error.response.data.message))
   }

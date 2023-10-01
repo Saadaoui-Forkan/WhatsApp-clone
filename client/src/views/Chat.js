@@ -10,7 +10,7 @@ import Error from '../components/Error';
 import { Row } from 'reactstrap';
 import axios from 'axios'
 
-function Chat() {
+function Chat({ setIsLoggedIn }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [users, setUsers] = useState([])
   const [receiver, setReceiver] = useState(undefined)
@@ -26,7 +26,7 @@ function Chat() {
         await axios.get('/api/auth', {
           headers: {
             'Content-Type': 'application/json',
-            'x-auth-token': user?.data.token
+            'x-auth-token': user?.data?.token
           }})
         .then(res => setCurrentUser(res.data))
         .catch(err => console.log(err, "err"))
@@ -101,7 +101,11 @@ function Chat() {
         <EditProfile />
       </div>
       <div id="messages-section" className="col-6 col-md-8">
-        <ChatHeader users={users} receiver={receiver} />
+        <ChatHeader
+          users={users}
+          receiver={receiver}
+          setIsLoggedIn={setIsLoggedIn}
+        />
         <Messages messages={messages} scrollRef={scrollRef} />
         <Error error={err} />
         <MessageForm

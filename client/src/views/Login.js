@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Error from '../components/Error';
 import axios from 'axios'
 
-function Login() {
+function Login({setIsLoggedIn}) {
   const [error, setError] = useState('')
 
   const navigate = useNavigate();
@@ -23,8 +23,9 @@ function Login() {
     e.preventDefault()  
     axios.post('/api/auth/login', formData)
     .then(res => {
+      setIsLoggedIn(true)
       localStorage.setItem("user", JSON.stringify(res.data));
-      navigate('/')
+      navigate("/", { replace: true })
     })
     .catch(error => setError(error.response.data.message))
   }

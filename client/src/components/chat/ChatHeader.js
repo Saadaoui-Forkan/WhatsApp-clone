@@ -2,9 +2,15 @@ import React from 'react'
 import { Row, DropdownItem, DropdownMenu, DropdownToggle, Nav, UncontrolledDropdown} from "reactstrap";
 import Avatar from '../Avatar';
 
-function ChatHeader({ receiver, users }) {
+function ChatHeader({ receiver, users, setIsLoggedIn }) {
     // Find Receiver Avatar
     const receiverAvatar = users.find(u=> u._id === receiver?._id)
+
+    // logout
+    const logout = () => {
+        localStorage.removeItem("user");
+        setIsLoggedIn(false)    
+    }
   return (
     <div>
         <Row className="heading m-0">
@@ -17,7 +23,6 @@ function ChatHeader({ receiver, users }) {
             </div>
             <div className="text-right">
                 <div>{receiver ? receiver.name : ''}</div>
-                {/* <small>{status()}</small> */}
            </div>
             <Nav className="mr-auto" navbar>
                 <UncontrolledDropdown>
@@ -27,7 +32,7 @@ function ChatHeader({ receiver, users }) {
                     <DropdownMenu>
                         <DropdownItem >تغيير كلمة المرور</DropdownItem>
                         <DropdownItem divider />
-                        <DropdownItem >تسجيل الخروج</DropdownItem>
+                        <DropdownItem onClick={()=>logout()}>تسجيل الخروج</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
             </Nav>
