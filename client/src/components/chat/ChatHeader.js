@@ -1,8 +1,10 @@
 import React from 'react'
 import { Row, DropdownItem, DropdownMenu, DropdownToggle, Nav, UncontrolledDropdown} from "reactstrap";
 import Avatar from '../Avatar';
+import { useNavigate } from 'react-router-dom';
 
 function ChatHeader({ receiver, users, setIsLoggedIn }) {
+    const navigate = useNavigate()
     // Find Receiver Avatar
     const receiverAvatar = users.find(u=> u._id === receiver?._id)
 
@@ -30,7 +32,7 @@ function ChatHeader({ receiver, users, setIsLoggedIn }) {
                         <i className="fa fa-ellipsis-v" />
                     </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem >تغيير كلمة المرور</DropdownItem>
+                        <DropdownItem onClick={()=> navigate("/password")}>تغيير كلمة المرور</DropdownItem>
                         <DropdownItem divider />
                         <DropdownItem onClick={()=>logout()}>تسجيل الخروج</DropdownItem>
                     </DropdownMenu>

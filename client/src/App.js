@@ -4,6 +4,7 @@ import Chat from './views/Chat';
 import NotFound from './views/NotFound';
 import Register from './views/Register';
 import Login from './views/Login';
+import Password from './views/Password';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -42,6 +43,7 @@ function App() {
               )
             }
           />
+          <Route path="/password" element={<Password />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </Router>

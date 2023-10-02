@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { registerUser, loginUser, getCurrentUser, getUsers } = require('../controllers/authCtr')
+const { registerUser, loginUser, getCurrentUser, getUsers, changePassword } = require('../controllers/authCtr')
 const { check } = require('express-validator');
 const protect = require('../middlewares/authMiddleware');
 
@@ -16,10 +16,20 @@ router.post("/login", [
     check('password', 'Please enter a password with 6 or more characters').isLength({min: 6}),
 ], loginUser);
 
-// /api/auth
-router.get('/', protect, getCurrentUser)
+// /api/auth/currentUser
+router.get('/currentUser', protect, getCurrentUser)
 
 //  /api/auth/allusers/:userId
 router.get('/allusers/:id', getUsers)
+
+// /api/auth/change_password
+router.post(
+  "/change_password",
+  [
+    check("newPassword",'Please enter a password with 6 or more characters').isLength({min: 6}),
+  ],
+  protect,
+  changePassword
+);
 
 module.exports = router;

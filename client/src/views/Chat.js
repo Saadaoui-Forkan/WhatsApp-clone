@@ -23,7 +23,7 @@ function Chat({ setIsLoggedIn }) {
   useEffect(() => {
     const getUser = async() => {
       const user = JSON.parse(localStorage.getItem('user'))
-        await axios.get('/api/auth', {
+        await axios.get('/api/auth/currentUser', {
           headers: {
             'Content-Type': 'application/json',
             'x-auth-token': user?.data?.token
@@ -35,17 +35,19 @@ function Chat({ setIsLoggedIn }) {
   }, [])
 
   // fetch users
-  useEffect(()=> {
-    const getUsers = async() => {
-      try {
-        const res = await axios.get(`/api/auth/allusers/${currentUser?._id}`)
-        setUsers(res.data)
-      } catch (error) {
-        console.log(error.message)
+  useEffect(() => {
+    const getUsers = async () => {
+      if (currentUser?._id) { // التحقق من وجود قيمة قبل إجراء الطلب
+        try {
+          const res = await axios.get(`/api/auth/allusers/${currentUser._id}`);
+          setUsers(res.data);
+        } catch (error) {
+          console.log(error.message);
+        }
       }
-    }
-    getUsers()
-  },[currentUser?._id])
+    };
+    getUsers();
+  }, [currentUser?._id]);
 
   // Define Sender 
   const handleReceiver = (chat) => {

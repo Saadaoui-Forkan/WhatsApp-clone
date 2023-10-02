@@ -30,6 +30,21 @@ function Login({setIsLoggedIn}) {
     .catch(error => setError(error.response.data.message))
   }
 
+  // const headers = new Headers({
+  //   'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
+  //   'Custom-Header': 'Header-Value'
+  // });
+  
+  // const requestOptions = {
+  //   method: 'GET', // or 'POST', 'PUT', 'DELETE', etc.
+  //   headers: headers
+  // };
+  
+  // fetch('https://example.com/api/endpoint', requestOptions)
+  //   .then(response => response.json())
+  //   .then(data => console.log(data))
+  //   .catch(error => console.error('Error:', error));
+
   return (
     <Card className="auth col-lg-3 col-sm-6">
       <Form onSubmit={onSubmit}>
