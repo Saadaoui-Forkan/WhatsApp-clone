@@ -2,7 +2,8 @@ import React from 'react'
 import Avatar from "../Avatar";
 import { Row } from "reactstrap";
 
-function ContactHeader({ currentUser }) {
+function ContactHeader({ currentUser, handleEditProfile }) {
+  
   return (
     <Row className="heading">
        <Avatar 
@@ -12,7 +13,7 @@ function ContactHeader({ currentUser }) {
           مرحبا <h6 className='contact-header-name'>{currentUser?.name}</h6>
        </div>
        <div className="mr-auto nav-link" >
-            <i className="fa fa-bars" />
+            <i className="fa fa-bars" onClick={handleEditProfile}/>
        </div>
    </Row>
   )

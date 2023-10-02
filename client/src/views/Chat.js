@@ -17,8 +17,14 @@ function Chat({ setIsLoggedIn }) {
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
   const [messages, setMessages] = useState([])
+  const [editProfile, setEditProfile] = useState(false)
 
   const scrollRef = useRef()
+
+  // edit profile
+  const handleEditProfile = () => {
+    setEditProfile(!editProfile)
+  }
 
   useEffect(() => {
     const getUser = async() => {
@@ -29,7 +35,7 @@ function Chat({ setIsLoggedIn }) {
             'x-auth-token': user?.data?.token
           }})
         .then(res => setCurrentUser(res.data))
-        .catch(err => console.log(err, "err"))
+        .catch(err => setErr(err.response.data.msg))
     }
     getUser()
   }, [])
@@ -37,7 +43,7 @@ function Chat({ setIsLoggedIn }) {
   // fetch users
   useEffect(() => {
     const getUsers = async () => {
-      if (currentUser?._id) { // التحقق من وجود قيمة قبل إجراء الطلب
+      if (currentUser?._id) { 
         try {
           const res = await axios.get(`/api/auth/allusers/${currentUser._id}`);
           setUsers(res.data);
@@ -97,10 +103,16 @@ function Chat({ setIsLoggedIn }) {
   return (
     <Row className="h-100">
       <div id="contacts-section" className="col-6 col-md-4">
-        <ContactHeader currentUser={currentUser} />
+        <ContactHeader 
+          currentUser={currentUser} 
+          handleEditProfile={handleEditProfile}
+        />
         <Contacts users={users} handleReceiver={handleReceiver} />
         <UserProfile />
-        <EditProfile />
+        <EditProfile 
+          editProfile = {editProfile}
+          handleEditProfile = {handleEditProfile}
+        />
       </div>
       <div id="messages-section" className="col-6 col-md-8">
         <ChatHeader

@@ -33,16 +33,17 @@ function App() {
               )
             }
           />
-          <Route
+          {/* <Route
             path="/register"
             element={
               !isLoggedIn ? (
                 <Register setIsLoggedIn={setIsLoggedIn} />
               ) : (
-                <Navigate to="/" />
+                <Navigate to="/login" />
               )
             }
-          />
+          /> */}
+          <Route path='/register' element={<Register />} />
           <Route path="/password" element={<Password />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>

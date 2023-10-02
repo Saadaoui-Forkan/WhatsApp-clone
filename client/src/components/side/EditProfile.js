@@ -4,19 +4,15 @@ import Error from '../Error';
 import { Row, Form, Input, Button } from "reactstrap";
 
 function EditProfile(props) {
-    const onClose = e => {
-        console.log(e)
-    }
-    const showFileUpload= () => {
-        console.log("first")
-    }
+
+  const { editProfile, handleEditProfile } = props
   return (
     <div 
       // className='"side-profile open"'
-      className={props.open ? "side-profile open" : "side-profile"}
+      className={editProfile ? "side-profile open" : "side-profile"}
     >
       <Row className="heading">
-        <div className="mr-2 nav-link" onClick={onClose}>
+        <div className="mr-2 nav-link" onClick={handleEditProfile}>
           <i className="fa fa-arrow-right" />
         </div>
         <div>الملف الشخصي</div>
@@ -28,7 +24,10 @@ function EditProfile(props) {
         >
           {/* <Error error={error} /> */}
 
-          <div className="text-center" onClick={showFileUpload}>
+          <div 
+            className="text-center" 
+            // onClick={showFileUpload}
+          >
             <Avatar 
                 // src={this.props.user.avatar} 
                 // file={this.state.image} 

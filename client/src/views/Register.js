@@ -26,8 +26,8 @@ function Register({ setIsLoggedIn }) {
     axios.post('/api/auth/register', formData)
     .then(res => {
       setIsLoggedIn(true)
-      localStorage.setItem("user", JSON.stringify(res.data));
-      navigate("/", { replace: true })
+      // localStorage.setItem("user", JSON.stringify(res?.data));
+      navigate("/login", { replace: true })
     })
     .catch(error => setError(error.response.data.message))
   }
