@@ -1,7 +1,16 @@
 const router = require('express').Router()
-const { registerUser, loginUser, getCurrentUser, getUsers, changePassword } = require('../controllers/authCtr')
+const multer = require("multer"); 
+const {
+  registerUser,
+  loginUser,
+  getCurrentUser,
+  getUsers,
+  changePassword,
+  updateProfile,
+} = require("../controllers/authCtr");
 const { check } = require('express-validator');
 const protect = require('../middlewares/authMiddleware');
+const path = require('path')
 
 // /api/auth/register
 router.post("/register", [
@@ -31,5 +40,18 @@ router.post(
   protect,
   changePassword
 );
+
+//  /api/auth/profile
+const storage = multer.diskStorage({
+  destination: function (req,file,cb){
+      cb(null,path.join(__dirname,"../uploads"));
+  },
+  filename: function (req,file,cb){
+      cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+router.post('/profile', [upload.single("image"), protect], updateProfile)
 
 module.exports = router;

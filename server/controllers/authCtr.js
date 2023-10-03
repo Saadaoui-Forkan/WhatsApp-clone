@@ -143,10 +143,36 @@ const changePassword = async(req,res) => {
     }
 }
 
+//  Edit Profile
+const updateProfile = async(req, res) => {
+    try {
+        //  Define The Current User
+        const id = new mongoose.Types.ObjectId(req.user);
+        const user = await User.findOne({ _id: id });
+        console.log(user)
+
+        // Request Data
+        const { name, about, avatar } = req.body
+        user.name = name;
+        user.about = about;
+        user.avatar = req.file ? req.file.filename : avatar;
+        
+        await user.save()
+
+        res.status(200).json({
+            msg: "success",
+            data: user
+        });
+    } catch (error) {
+        res.status(500).send({msg: error});
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser, 
     getCurrentUser,
     getUsers,
-    changePassword
+    changePassword,
+    updateProfile
 }
