@@ -149,7 +149,7 @@ const updateProfile = async(req, res) => {
         //  Define The Current User
         const id = new mongoose.Types.ObjectId(req.user);
         const user = await User.findOne({ _id: id });
-        console.log(user)
+        console.log(req.headers)
 
         // Request Data
         const { name, about, avatar } = req.body

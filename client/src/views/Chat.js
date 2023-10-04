@@ -110,6 +110,7 @@ function Chat({ setIsLoggedIn }) {
         <Contacts users={users} handleReceiver={handleReceiver} />
         <UserProfile />
         <EditProfile 
+          user={currentUser}
           editProfile = {editProfile}
           handleEditProfile = {handleEditProfile}
         />

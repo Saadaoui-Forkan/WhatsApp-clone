@@ -1,12 +1,42 @@
-import React from 'react'
+import React, { useState, useRef } from 'react';
 import Avatar from '../Avatar';
 import Error from '../Error';
 import { Row, Form, Input, Button } from "reactstrap";
-import upload from '../../assets/upload.png'
 
 function EditProfile(props) {
+  const { editProfile, handleEditProfile, user } = props
+  const [profileImage, setProfileImage] = useState(null)
+  const fileUpload = useRef(null)
+  //  Update Profile
+  // useEffect(() => {
+  //   const updateProfile = async() => {
+  //     const user = JSON.parse(localStorage.getItem('user'))
+  //       await axios.post('/api/auth/profile', {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'x-auth-token': user?.data?.token
+  //         }})
+  //       .then(res => console.log(res.data))
+  //       .catch(err => console.log(err.response.data.msg))
+  //   }
+  //   updateProfile()
+  // }, [])
 
-  const { editProfile, handleEditProfile } = props
+  const onImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfileImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  const showFileUpload = () => {
+    fileUpload.current.click()
+  }
+
   return (
     <div className={editProfile ? "side-profile open" : "side-profile"}>
       <Row className="heading">
@@ -17,7 +47,6 @@ function EditProfile(props) {
       </Row>
 
       <div className="edit_profile d-flex flex-column">
-        <img src={upload} className='upload'/>
         <Form
         // onSubmit={this.onSubmit}
         >
@@ -25,19 +54,21 @@ function EditProfile(props) {
 
           <div
             className="text-center"
-            // onClick={showFileUpload}
+            onClick={showFileUpload}
           >
             <Avatar
-            // src={this.props.user.avatar}
-            // file={this.state.image}
+              src={user?.avatar}
+              file={profileImage}
             />
           </div>
 
           <input
             type="file"
-            // ref={this.fileUpload}
-            // onChange={this.onImageChange}
             className="d-none"
+            // type="file"
+            accept="image/*"
+            onChange={onImageChange}
+            ref={fileUpload}
           />
 
           <div className="bg-white px-4 py-2">
