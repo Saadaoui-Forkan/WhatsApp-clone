@@ -2,32 +2,52 @@ import React, { useState, useRef } from 'react';
 import Avatar from '../Avatar';
 import Error from '../Error';
 import { Row, Form, Input, Button } from "reactstrap";
+import axios from 'axios'
 
 function EditProfile(props) {
-  const { editProfile, handleEditProfile, user } = props
-  const [profileImage, setProfileImage] = useState(null)
+  const { editProfile, handleEditProfile, user, setCurrentUser } = props
+  // const [profileImage, setProfileImage] = useState(null)
   const fileUpload = useRef(null)
-  //  Update Profile
-  // useEffect(() => {
-  //   const updateProfile = async() => {
-  //     const user = JSON.parse(localStorage.getItem('user'))
-  //       await axios.post('/api/auth/profile', {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'x-auth-token': user?.data?.token
-  //         }})
-  //       .then(res => console.log(res.data))
-  //       .catch(err => console.log(err.response.data.msg))
-  //   }
-  //   updateProfile()
-  // }, [])
+  const [error, setError] = useState(null)
+  const [profileData, setProfileData] = useState({
+    name: "",
+    about: "",
+    profileImage: null
+  })
+
+  const { name, about, profileImage } = profileData
+  const onChange = (e) => {
+    setProfileData({...profileData, [e.target.name]: e.target.value})
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // console.log("msg: ", user)
+    const user = JSON.parse(localStorage.getItem("user"));
+    axios
+      .post("/api/auth/profile", profileData, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": user.data?.token,
+        },
+      })
+      .then((res) => {
+        console.log("msg: ", user)
+        setCurrentUser(res.data.data)
+      })
+      .catch((error) => setError(error.response.data.msg));
+  }
 
   const onImageChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if ( event.target.files[0] && event.target.files ) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileImage(e.target.result);
+        setProfileData({
+          name,
+          about,
+          profileImage: e.target.result
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -48,9 +68,9 @@ function EditProfile(props) {
 
       <div className="edit_profile d-flex flex-column">
         <Form
-        // onSubmit={this.onSubmit}
+          onSubmit={handleSubmit}
         >
-          {/* <Error error={error} /> */}
+          <Error error={error} />
 
           <div
             className="text-center"
@@ -58,25 +78,25 @@ function EditProfile(props) {
           >
             <Avatar
               src={user?.avatar}
-              file={profileImage}
+              file={profileData.profileImage}
             />
           </div>
 
           <input
             type="file"
             className="d-none"
-            // type="file"
             accept="image/*"
             onChange={onImageChange}
             ref={fileUpload}
+            value={profileImage}
           />
 
           <div className="bg-white px-4 py-2">
             <label className="text-muted">الاسم</label>
             <Input
-              //   value={this.state.name}
+              value={name}
               name="name"
-              //   onChange={this.onChange}
+              onChange={(e)=> onChange(e)}
               required
               autoComplete="off"
             />
@@ -85,9 +105,9 @@ function EditProfile(props) {
           <div className="bg-white px-3 py-2">
             <label className="text-muted">رسالة الحالة</label>
             <Input
-              //   value={this.state.about}
+              value={about}
               name="about"
-              //   onChange={this.onChange}
+              onChange={(e)=> onChange(e)}
               required
               autoComplete="off"
             />

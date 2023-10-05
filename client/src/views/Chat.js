@@ -39,6 +39,7 @@ function Chat({ setIsLoggedIn }) {
     }
     getUser()
   }, [])
+  console.log({currentUser})
 
   // fetch users
   useEffect(() => {
@@ -110,6 +111,7 @@ function Chat({ setIsLoggedIn }) {
         <Contacts users={users} handleReceiver={handleReceiver} />
         <UserProfile />
         <EditProfile 
+          setCurrentUser={setCurrentUser}
           user={currentUser}
           editProfile = {editProfile}
           handleEditProfile = {handleEditProfile}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Card, Input, Button, Form } from 'reactstrap'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, redirect } from 'react-router-dom';
 import Error from '../components/Error';
 import axios from 'axios'
 
@@ -27,7 +27,7 @@ function Register({ setIsLoggedIn }) {
     .then(res => {
       setIsLoggedIn(true)
       // localStorage.setItem("user", JSON.stringify(res?.data));
-      navigate("/login", { replace: true })
+      redirect("/login", { replace: true })
     })
     .catch(error => setError(error.response.data.message))
   }

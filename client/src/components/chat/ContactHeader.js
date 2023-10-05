@@ -9,8 +9,9 @@ function ContactHeader({ currentUser, handleEditProfile }) {
        <Avatar 
         src={currentUser?.avatar} 
       />
-       <div>
-          مرحبا <h6 className='contact-header-name'>{currentUser?.name}</h6>
+       <div className='info'>
+          <h6 className='contact-header-name'>{currentUser?.name}</h6>
+          <p className='contact-header-about'>{currentUser?.about}</p>
        </div>
        <div className="mr-auto nav-link" >
             <i className="fa fa-bars" onClick={handleEditProfile}/>
