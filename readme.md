@@ -12,6 +12,5 @@
 <img src="/img/c1.JPG" alt="img1" title="img1" style="width: 500px">
 <img src="/img/c2.JPG" alt="img1" title="img1" style="width: 500px">
 <img src="/img/c3.JPG" alt="img1" title="img1" style="width: 500px">
-<img src="/img/c4.JPG" alt="img1" title="img1" style="width: 500px">
 
 
