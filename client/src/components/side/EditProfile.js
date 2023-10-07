@@ -45,6 +45,8 @@ function EditProfile(props) {
         setCurrentUser(res.data.data)
       })
       .catch((error) => setError(error.response.data.msg));
+
+      handleEditProfile()
   }
   
   return (

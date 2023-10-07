@@ -4,7 +4,6 @@ import ChatHeader from '../components/chat/ChatHeader';
 import ContactHeader from '../components/chat/ContactHeader';
 import Contacts from '../components/chat/Contacts';
 import EditProfile from '../components/side/EditProfile';
-import UserProfile from '../components/side/UserProfile';
 import Messages from '../components/chat/Messages';
 import Error from '../components/Error';
 import { Row } from 'reactstrap';
@@ -108,7 +107,6 @@ function Chat({ setIsLoggedIn }) {
           handleEditProfile={handleEditProfile}
         />
         <Contacts users={users} handleReceiver={handleReceiver} />
-        <UserProfile />
         <EditProfile 
           setCurrentUser={setCurrentUser}
           user={currentUser}

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Card, Input, Button, Form } from 'reactstrap'
-import { Link, useNavigate, redirect } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Error from '../components/Error';
 import axios from 'axios'
 
-function Register({ setIsLoggedIn }) {
+function Register() {
   const [error, setError] = useState('')
 
   const navigate = useNavigate();
@@ -25,9 +25,8 @@ function Register({ setIsLoggedIn }) {
     e.preventDefault()  
     axios.post('/api/auth/register', formData)
     .then(res => {
-      setIsLoggedIn(true)
-      // localStorage.setItem("user", JSON.stringify(res?.data));
-      redirect("/login", { replace: true })
+      setFormData(res?.data)
+      navigate("/login", { replace: true })
     })
     .catch(error => setError(error.response.data.message))
   }

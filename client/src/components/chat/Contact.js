@@ -8,7 +8,7 @@ function Contact({  user, handleReceiver }) {
     >
        <div>
            <Avatar 
-                src={user.avatar} 
+                src={user?.avatar} 
             /> 
        </div>
        <div className="w-50">
