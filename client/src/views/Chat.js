@@ -39,7 +39,6 @@ function Chat({ setIsLoggedIn }) {
     }
     getUser()
   }, [])
-  console.log({currentUser})
 
   // fetch users
   useEffect(() => {

@@ -6,57 +6,47 @@ import axios from 'axios'
 
 function EditProfile(props) {
   const { editProfile, handleEditProfile, user, setCurrentUser } = props
-  // const [profileImage, setProfileImage] = useState(null)
+  const [avatar, setAvatar] = useState(null)
+  const [image, setImage] = useState(null)
+  const [name, setName] = useState("")
+  const [about, setAbout] = useState("")
+  const [error, setError] = useState("")
   const fileUpload = useRef(null)
-  const [error, setError] = useState(null)
-  const [profileData, setProfileData] = useState({
-    name: "",
-    about: "",
-    profileImage: null
-  })
-
-  const { name, about, profileImage } = profileData
-  const onChange = (e) => {
-    setProfileData({...profileData, [e.target.name]: e.target.value})
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // console.log("msg: ", user)
-    const user = JSON.parse(localStorage.getItem("user"));
-    axios
-      .post("/api/auth/profile", profileData, {
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": user.data?.token,
-        },
-      })
-      .then((res) => {
-        console.log("msg: ", user)
-        setCurrentUser(res.data.data)
-      })
-      .catch((error) => setError(error.response.data.msg));
-  }
-
-  const onImageChange = (event) => {
-    const file = event.target.files[0];
-    if ( event.target.files[0] && event.target.files ) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileData({
-          name,
-          about,
-          profileImage: e.target.result
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  }
 
   const showFileUpload = () => {
     fileUpload.current.click()
   }
 
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(URL.createObjectURL(event.target.files[0]));
+      setAvatar(event.target.files[0]);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('about', about)
+    if (avatar) {
+      formData.append('avatar', avatar, avatar.name)
+    }
+    axios
+      .post("/api/auth/profile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "x-auth-token": user.data?.token,
+        },
+      })
+      .then((res) => {
+        setCurrentUser(res.data.data)
+      })
+      .catch((error) => setError(error.response.data.msg));
+  }
+  
   return (
     <div className={editProfile ? "side-profile open" : "side-profile"}>
       <Row className="heading">
@@ -69,8 +59,9 @@ function EditProfile(props) {
       <div className="edit_profile d-flex flex-column">
         <Form
           onSubmit={handleSubmit}
+          encType="multipart/form-data"
         >
-          <Error error={error} />
+          {error && <Error error={error} />}
 
           <div
             className="text-center"
@@ -78,7 +69,7 @@ function EditProfile(props) {
           >
             <Avatar
               src={user?.avatar}
-              file={profileData.profileImage}
+              file={image}
             />
           </div>
 
@@ -86,9 +77,10 @@ function EditProfile(props) {
             type="file"
             className="d-none"
             accept="image/*"
+            name='image'
             onChange={onImageChange}
             ref={fileUpload}
-            value={profileImage}
+            // value={image}
           />
 
           <div className="bg-white px-4 py-2">
@@ -96,7 +88,7 @@ function EditProfile(props) {
             <Input
               value={name}
               name="name"
-              onChange={(e)=> onChange(e)}
+              onChange={(e)=> setName(e.target.value)}
               required
               autoComplete="off"
             />
@@ -107,7 +99,7 @@ function EditProfile(props) {
             <Input
               value={about}
               name="about"
-              onChange={(e)=> onChange(e)}
+              onChange={(e)=> setAbout(e.target.value)}
               required
               autoComplete="off"
             />

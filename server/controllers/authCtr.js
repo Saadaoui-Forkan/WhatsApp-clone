@@ -156,7 +156,7 @@ const updateProfile = async(req, res) => {
         user.name = name;
         user.about = about;
         user.avatar = req.file ? req.file.filename : avatar;
-        
+        console.log(req.file)
         await user.save()
 
         res.status(200).json({

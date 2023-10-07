@@ -44,7 +44,7 @@ router.post(
 //  /api/auth/profile
 const storage = multer.diskStorage({
   destination: function (req,file,cb){
-      cb(null,path.join(__dirname,"../uploads"));
+      cb(null,path.join(__dirname,"../../client/public/uploads"));
   },
   filename: function (req,file,cb){
       cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
@@ -52,6 +52,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-router.post('/profile', [upload.single("image"), protect], updateProfile)
+router.post('/profile', [upload.single("avatar"), protect], updateProfile)
 
 module.exports = router;
