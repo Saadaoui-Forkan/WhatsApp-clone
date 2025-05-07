@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.ts",
-    "dev": "nodemon --watch ./ --ext ts --exec tsx index.ts",
+    "start": "node dist/index.js",
+    "server": "tsx watch index.ts",
     "build": "tsc"
   },
   "author": "Mahmoud Saadaoui",
@@ -19,7 +19,6 @@
     "express": "^4.21.2",
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.2",
-    "nodemon": "^3.1.9",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
