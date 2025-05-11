@@ -1,23 +1,24 @@
 import { FormField } from "../types/user.types";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 
 export const registerFields: FormField[] = [
   {
     type: "text",
     name: "name",
     placeholder: "Full name ...",
-    icon: "name",
+    icon: FaUser, 
   },
   {
     type: "email",
     name: "email",
     placeholder: "Email address ...",
-    icon: "email",
+    icon: FaEnvelope,
   },
   {
     type: "password",
     name: "password",
     placeholder: "Password ...",
-    icon: "password",
+    icon: FaLock,
   }
 ];
 
@@ -26,12 +27,12 @@ export const loginFields: FormField[] = [
     type: "email",
     name: "email",
     placeholder: "Email address ...",
-    icon: "email",
+    icon: FaEnvelope,
   },
   {
     type: "password",
     name: "password",
     placeholder: "Password ...",
-    icon: "password",
+    icon: FaLock,
   }
 ];

@@ -1,7 +1,7 @@
 import { ChangeEvent, ReactNode } from "react";
+import { IconType } from "react-icons";
 
 type InputType = 'text' | 'email' | 'password';
-type IconType = 'name' | 'email' | 'password';
 
 export interface InputWithIconProps {
   type?: InputType,
