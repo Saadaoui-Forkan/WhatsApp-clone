@@ -1,47 +1,98 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import InputWithIcon from "../components/InputWithIcon";
-import { registerFields } from "../utils/formConfig";
 import AuthHeader from "../components/AuthHeader";
+import AuthLink from "../components/AuthLink";
+import { Field, Form, Formik, FormikHelpers } from "formik";
+import { RegisterFormValues } from "../types/user.types";
+import useTogglePassword from "../hooks/useTogglePassword";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import ErrorMessage from "../components/ErrorMessage";
+import { registerInitialValues } from "../utils/formInitialValues";
+import { registerSchema } from "../utils/schemas";
+import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
 
 const Register = () => {
+  const { showPassword, togglePasswordVisibility } = useTogglePassword();
+  const onSubmit = (
+    values: RegisterFormValues,
+    actions: FormikHelpers<RegisterFormValues>
+  ) => {
+    console.log(values);
+    actions.resetForm();
+  };
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4">
+    <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <AuthHeader title="Join us" subtitle="Create your account in seconds" />
 
-        <form className="space-y-6">
-          <div className="space-y-4">
-            {registerFields.map((field) => (
-              <InputWithIcon
-                key={field.name}
-                type={field.type}
-                name={field.name}
-                placeholder={field.placeholder}
-                icon={field.icon}
-              />
-            ))}
-          </div>
-
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-emerald-800 dark:from-purple-600 dark:to-purple-800 text-white font-semibold rounded-lg shadow hover:opacity-90 transition duration-200"
-          >
-            Register
-          </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-gray-600 dark:text-gray-300">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-emerald-700 dark:text-purple-300 hover:underline font-medium"
-            >
-              Log in
-            </Link>
-          </p>
-        </div>
+        <Formik
+          initialValues={registerInitialValues}
+          validationSchema={registerSchema}
+          onSubmit={onSubmit}
+        >
+          {({ errors, touched }) => (
+            <Form className="space-y-6">
+              <div className="space-y-4">
+              <Field
+                  type="text"
+                  name="name"
+                  className={`${InputClass}`}
+                  placeholder="Full name ..."
+                />
+                <ErrorMessage errors={errors} touched={touched} name="name" />
+                <Field
+                  type="text"
+                  name="email"
+                  className={`${InputClass}`}
+                  placeholder="Email address ..."
+                />
+                <ErrorMessage errors={errors} touched={touched} name="email" />
+                <div className="relative">
+                  <Field
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    className={`${InputClass}`}
+                    placeholder="Password ..."
+                  />
+                  <div
+                    onClick={togglePasswordVisibility}
+                    className={`${IconBtnClass}`}                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
+                  </div>
+                </div>
+                <ErrorMessage errors={errors} touched={touched} name="password" />
+                <div className="relative">
+                  <Field
+                    type={showPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    className={`${InputClass}`}
+                    placeholder="Confirm password ..."
+                  />
+                  <div
+                    onClick={togglePasswordVisibility}
+                    className={`${IconBtnClass}`}
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
+                  </div>
+                </div>
+                <ErrorMessage errors={errors} touched={touched} name="confirmPassword" />
+              </div>
+              <button
+                type="submit"
+                className={`${BtnClass}`}
+              >
+                Register
+              </button>
+            </Form>
+          )}
+        </Formik>
+        <AuthLink to="/login" link="Login" text="Already have an account?"/>
       </div>
     </div>
   );
