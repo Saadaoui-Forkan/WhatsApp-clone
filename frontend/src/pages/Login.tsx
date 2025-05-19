@@ -8,16 +8,43 @@ import ErrorMessage from "../components/ErrorMessage";
 import { loginInitialValues } from "../utils/formInitialValues";
 import { loginSchema } from "../utils/schemas";
 import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
+import { useLogin } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/auth.store";
+import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
 
 const LoginPage = () => {
   const { showPassword, togglePasswordVisibility } = useTogglePassword();
+  const navigate = useNavigate();
+  const { mutate, isPending } = useLogin()
+  const { setToken, setUser } = useAuthStore()
 
   const onSubmit = (
     values: LoginFormValues,
     actions: FormikHelpers<LoginFormValues>
   ) => {
-    console.log(values);
-    actions.resetForm();
+    mutate(values, {
+      onSuccess: (data) => {
+        setUser(data.data.name)
+        setToken(data.data.token)
+        toast.success(data.message)
+        navigate('/')
+        actions.resetForm()
+      },
+      onError: (error: unknown) => {
+        if (Array.isArray(error)) {
+          error.forEach(err => toast.error(err))
+        } else if (typeof error === "string") {
+          toast.error(error)
+        } else if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
+        actions.resetForm()
+      }
+    })
   };
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4">
@@ -63,9 +90,10 @@ const LoginPage = () => {
               </div>
               <button
                 type="submit"
-                className={`${BtnClass}`}
+                className={`${BtnClass} ${isPending ? 'opacity-60 cursor-not-allowed' : ''}`}
+                disabled={isPending}
               >
-                Login
+                {isPending ? <Spinner small /> : "Login"}
               </button>
             </Form>
           )}

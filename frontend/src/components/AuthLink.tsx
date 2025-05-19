@@ -3,7 +3,7 @@ import { AuthLinkProps } from "../types/user.types";
 
 const AuthLink = ({ to, link, text }: AuthLinkProps) => {
   return (
-    <div className="mb-3 py-4 text-center">
+    <div className="mb-5 py-4 text-center">
       <p className="text-gray-600 dark:text-gray-300">
         {text}{" "}
         <Link

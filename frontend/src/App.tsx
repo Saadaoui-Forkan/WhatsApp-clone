@@ -1,12 +1,16 @@
 import Footer from "./components/Footer";
 import Theme from "./components/Theme";
 import Router from "./routes";
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   return(
     <>
+      <ToastContainer theme="colored" autoClose={3000}/>
       <Theme/>
-      <Router />
+      <div className="bg-white dark:bg-gray-700">
+        <Router />
+      </div>
       <Footer/>
     </>
   );

@@ -8,15 +8,43 @@ import ErrorMessage from "../components/ErrorMessage";
 import { registerInitialValues } from "../utils/formInitialValues";
 import { registerSchema } from "../utils/schemas";
 import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
+import { useRegister } from "../hooks/useAuth";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
+import { useAuthStore } from "../store/auth.store";
 
 const Register = () => {
+  const navigate = useNavigate()
   const { showPassword, togglePasswordVisibility } = useTogglePassword();
+  const { setUser, setToken } = useAuthStore()
+  const { mutate, isPending } = useRegister()
+  
   const onSubmit = (
     values: RegisterFormValues,
     actions: FormikHelpers<RegisterFormValues>
   ) => {
-    console.log(values);
-    actions.resetForm();
+    mutate(values, {
+      onSuccess: (data) => {
+        setUser(data.data.name)
+        setToken(data.data.token)
+        toast.success(data.message)
+        navigate('/')
+        actions.resetForm()
+      },
+      onError: (error: unknown) => {
+        if (Array.isArray(error)) {
+          error.forEach(err => toast.error(err))
+        } else if (typeof error === "string") {
+          toast.error(error)
+        } else if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
+        actions.resetForm()
+      }
+    })
   };
   return (
     <div className="flex items-center justify-center p-4">
@@ -85,9 +113,10 @@ const Register = () => {
               </div>
               <button
                 type="submit"
-                className={`${BtnClass}`}
+                className={`${BtnClass} ${isPending ? 'opacity-60 cursor-not-allowed' : ''}`}
+                disabled={isPending}
               >
-                Register
+                {isPending ? <Spinner small /> : "Register"}
               </button>
             </Form>
           )}

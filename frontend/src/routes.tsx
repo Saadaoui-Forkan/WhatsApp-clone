@@ -1,25 +1,31 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import Home from "./pages";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import { useAuthStore } from "./store/auth.store";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />
-  }, 
-  {
-    path: "register",
-    element: <Register />,
-  },
-  {
-    path: "login",
-    element: <Login />,
-  },
-]);
+const Router = () => {
+  const { token } = useAuthStore();
 
-export default function Router() {
-  return(
-    <RouterProvider router={router} />
-  )
-}
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: token ? <Home /> : <Navigate to="/login" />,
+    },
+    {
+      path: "register",
+      element: !token ? <Register /> : <Navigate to="/" />,
+    },
+    {
+      path: "login",
+      element: !token ? <Login /> : <Navigate to="/"/>,
+    },
+  ]);
+  return <RouterProvider router={router} />;
+};
+
+export default Router;
