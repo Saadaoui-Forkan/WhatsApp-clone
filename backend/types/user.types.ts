@@ -13,3 +13,10 @@ export interface UserInfo {
   id: string,
   email: string,
 }
+
+export interface JwtPayload {
+  userInfo: {
+    id: string;
+    email: string;
+  }
+}

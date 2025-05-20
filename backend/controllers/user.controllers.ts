@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from "express";
 import { loginSchema, registerSchema } from "../utils/validationSchema";
 import { LoginUser, RegisterUser } from "../types/user.types";
 import { handleError, validateData } from "../utils/common";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
 const prisma = new PrismaClient();
@@ -66,7 +66,7 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
  *  @route   /api/users/login
  *  @desc    Login user
  *  @access  public
- */
+*/
 export const login: RequestHandler<any, any, LoginUser> = async (
   req: Request,
   res: Response
@@ -97,6 +97,28 @@ export const login: RequestHandler<any, any, LoginUser> = async (
       });
       return;
     }
+  } catch (err) {
+    handleError(res, err as Error);
+  }
+};
+
+/**
+ *  @method  GET
+ *  @route   /api/users/me
+ *  @desc    Test protected route
+ *  @access  private
+*/
+export const test = async (
+  req: Request,
+  res: Response
+): Promise<void> => { 
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: "Not Authenticated" });
+      return; 
+    }
+    
+    res.json({ user: req.user }); 
   } catch (err) {
     handleError(res, err as Error);
   }
