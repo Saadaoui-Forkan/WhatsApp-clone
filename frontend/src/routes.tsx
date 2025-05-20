@@ -7,6 +7,7 @@ import Home from "./pages";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { useAuthStore } from "./store/auth.store";
+import NotFound from "./components/NotFound";
 
 const Router = () => {
   const { token } = useAuthStore();
@@ -23,6 +24,10 @@ const Router = () => {
     {
       path: "login",
       element: !token ? <Login /> : <Navigate to="/"/>,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ]);
   return <RouterProvider router={router} />;
