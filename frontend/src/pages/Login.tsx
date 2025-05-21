@@ -1,8 +1,7 @@
-import AuthHeader from "../components/AuthHeader";
-import AuthLink from "../components/AuthLink";
+import AuthHeader from "../components/auth/AuthHeader";
+import AuthLink from "../components/auth/AuthLink";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import useTogglePassword from "../hooks/useTogglePassword";
 import { LoginFormValues } from "../types/user.types";
 import ErrorMessage from "../components/ErrorMessage";
 import { loginInitialValues } from "../utils/formInitialValues";
@@ -13,9 +12,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth.store";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
+import useToggleShow from "../hooks/useToggleShow";
 
 const LoginPage = () => {
-  const { showPassword, togglePasswordVisibility } = useTogglePassword();
+  const { show, toggleVisibility } = useToggleShow();
   const navigate = useNavigate();
   const { mutate, isPending } = useLogin()
   const { setToken, setUser } = useAuthStore()
@@ -47,7 +47,7 @@ const LoginPage = () => {
     })
   };
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4">
+    <div className="flex items-center justify-center min-h-[calc(100vh-2rem)] px-4">
       <div className="w-full max-w-md">
         <AuthHeader
           title="Welcome back"
@@ -70,16 +70,16 @@ const LoginPage = () => {
                 <ErrorMessage errors={errors} touched={touched} name="email" />
                 <div className="relative">
                   <Field
-                    type={showPassword ? "text" : "password"}
+                    type={show ? "text" : "password"}
                     name="password"
                     className={`${InputClass}`}
                     placeholder="Password ..."
                   />
                   <div
-                    onClick={togglePasswordVisibility}
+                    onClick={toggleVisibility}
                     className={`${IconBtnClass}`}
                   >
-                    {showPassword ? (
+                    {show ? (
                       <AiOutlineEyeInvisible />
                     ) : (
                       <AiOutlineEye />

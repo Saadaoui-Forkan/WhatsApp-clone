@@ -1,4 +1,4 @@
-import { AuthHeaderProps } from "../types/user.types";
+import { AuthHeaderProps } from "../../types/user.types";
 
 const AuthHeader = ({ title, subtitle, className = "" }: AuthHeaderProps) => {
   return (

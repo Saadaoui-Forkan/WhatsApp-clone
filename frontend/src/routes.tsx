@@ -8,6 +8,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { useAuthStore } from "./store/auth.store";
 import NotFound from "./components/NotFound";
+import NotUserSelected from "./components/chat/NoUserSelected";
+import Chat from "./components/chat";
 
 const Router = () => {
   const { token } = useAuthStore();
@@ -16,6 +18,16 @@ const Router = () => {
     {
       path: "/",
       element: token ? <Home /> : <Navigate to="/login" />,
+      children: [
+        {
+          path:"",
+          element: <NotUserSelected/>
+        },
+        {
+          path:"receiverId",
+          element: <Chat/>
+        }
+      ]
     },
     {
       path: "register",

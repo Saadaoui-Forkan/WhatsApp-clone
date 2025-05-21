@@ -1,8 +1,7 @@
-import AuthHeader from "../components/AuthHeader";
-import AuthLink from "../components/AuthLink";
+import AuthHeader from "../components/auth/AuthHeader";
+import AuthLink from "../components/auth/AuthLink";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { RegisterFormValues } from "../types/user.types";
-import useTogglePassword from "../hooks/useTogglePassword";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import ErrorMessage from "../components/ErrorMessage";
 import { registerInitialValues } from "../utils/formInitialValues";
@@ -13,10 +12,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { useAuthStore } from "../store/auth.store";
+import useToggleShow from "../hooks/useToggleShow";
 
 const Register = () => {
   const navigate = useNavigate()
-  const { showPassword, togglePasswordVisibility } = useTogglePassword();
+  const { show, toggleVisibility } = useToggleShow();
   const { setUser, setToken } = useAuthStore()
   const { mutate, isPending } = useRegister()
   
@@ -75,15 +75,15 @@ const Register = () => {
                 <ErrorMessage errors={errors} touched={touched} name="email" />
                 <div className="relative">
                   <Field
-                    type={showPassword ? "text" : "password"}
+                    type={show ? "text" : "password"}
                     name="password"
                     className={`${InputClass}`}
                     placeholder="Password ..."
                   />
                   <div
-                    onClick={togglePasswordVisibility}
+                    onClick={toggleVisibility}
                     className={`${IconBtnClass}`}                  >
-                    {showPassword ? (
+                    {show ? (
                       <AiOutlineEyeInvisible />
                     ) : (
                       <AiOutlineEye />
@@ -93,16 +93,16 @@ const Register = () => {
                 <ErrorMessage errors={errors} touched={touched} name="password" />
                 <div className="relative">
                   <Field
-                    type={showPassword ? "text" : "password"}
+                    type={show ? "text" : "password"}
                     name="confirmPassword"
                     className={`${InputClass}`}
                     placeholder="Confirm password ..."
                   />
                   <div
-                    onClick={togglePasswordVisibility}
+                    onClick={toggleVisibility}
                     className={`${IconBtnClass}`}
                   >
-                    {showPassword ? (
+                    {show ? (
                       <AiOutlineEyeInvisible />
                     ) : (
                       <AiOutlineEye />

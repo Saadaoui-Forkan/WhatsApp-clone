@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="fixed bottom-0 left-0 w-full text-center text-sm text-gray-600 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-800 backdrop-blur-sm">
+    <footer className="fixed bottom-0 left-0 w-full text-center text-sm text-gray-600 dark:text-gray-300 p-3 bg-gray-200 dark:bg-gray-600 backdrop-blur-sm">
       Made with{" "}
       <a
         href="https://personal-portfolio-six-pearl-25.vercel.app/en"

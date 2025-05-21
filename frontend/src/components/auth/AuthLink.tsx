@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { AuthLinkProps } from "../types/user.types";
+import { AuthLinkProps } from "../../types/user.types";
 
 const AuthLink = ({ to, link, text }: AuthLinkProps) => {
   return (
