@@ -37,3 +37,16 @@ export const registerApi = async (data: RegisterFormValues) => {
     throw errorMsg ?? "An unexpected error occurred.";
   }
 }
+
+export const logoutApi = async (token: string) => {
+  try {
+    await axios.post(`${process.env.REACT_APP_API_URL}/users/logout`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

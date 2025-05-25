@@ -125,3 +125,27 @@ export const test = async (
     handleError(res, err as Error);
   }
 };
+
+/**
+ * @desc    Logout User
+ * @route   /api/users/logout
+ * @method  POST
+ * @access  private (only logged in users)
+*/
+export const logout = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: "Not Authenticated" });
+      return; 
+    }
+    
+    res.cookie("jwt", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    handleError(res, err as Error);
+  }
+};
