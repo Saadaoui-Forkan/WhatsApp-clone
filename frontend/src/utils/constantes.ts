@@ -1,0 +1,1 @@
+export const defaultAvatar = "https://png.pngtree.com/png-clipart/20200701/original/pngtree-character-default-avatar-png-image_5407167.jpg"

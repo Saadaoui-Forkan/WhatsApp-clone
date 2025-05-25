@@ -1,10 +1,17 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware';
 
+interface IUser {
+  id: string;
+  name: string;
+  bio?: string;
+  photoProfile?: string;
+}
+
 interface IAuth {
-  user: string | null;
+  user: IUser | null;
   token: string;
-  setUser: (user: string | null) => void;
+  setUser: (user: IUser | null) => void;
   setToken: (token: string) => void
 }
 

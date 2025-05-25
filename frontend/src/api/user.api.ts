@@ -3,7 +3,7 @@ import { LoginFormValues, RegisterFormValues } from "../types/user.types";
 
 export const loginApi = async (data: LoginFormValues) => {
   try {
-    const res = await axios.post(`http://localhost:5000/api/users/login`, data);
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, data);
     return res.data;
   } catch (error) {
     const err = error as AxiosError<{ message: string | string[] }>;
@@ -25,7 +25,7 @@ export const loginApi = async (data: LoginFormValues) => {
 
 export const registerApi = async (data: RegisterFormValues) => {
   try {
-    const res = await axios.post(`http://localhost:5000/api/users/register`, data);
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/users/register`, data);
     return res.data
   } catch (error) {
     const err = error as AxiosError<{ message: string | string[] }>;

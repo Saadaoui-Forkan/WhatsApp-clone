@@ -3,26 +3,32 @@ import { IoFilter } from "react-icons/io5";
 import MessageItem from "./MessageItem";
 import Profile from "../profile";
 import useToggleShow from "../../hooks/useToggleShow";
+import { useAuthStore } from "../../store/auth.store";
+import { defaultAvatar } from "../../utils/constantes";
 
 export default function Sidebar() {
   const { show, toggleVisibility } = useToggleShow();
+  const { user } = useAuthStore()
 
   if (show) {
     return <Profile/>
   }
   return (
     <div className="w-full h-full flex flex-col p-4">
-      {/* Avatar section */}
+      {/* Avatar section  */}
       <div 
         className="flex items-center mb-4 p-2 cursor-pointer transition-transform duration-300 hover:scale-105" 
         onClick={toggleVisibility}
       >
         <img
-          src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0="
+          src={user?.photoProfile ? user?.photoProfile : defaultAvatar}
           alt="Avatar"
           className="w-10 h-10 rounded-full object-cover"
         />
-        <p className="ml-3 font-semibold text-sm">Mahmoud Saadaoui</p>
+        <div className="ml-3 flex flex-col">
+          <p className="font-semibold text-sm">{user?.name}</p>
+          {user?.bio && <p className="text-xs">{user.bio}</p>}
+        </div>
       </div>
 
       {/* Search & filter */}

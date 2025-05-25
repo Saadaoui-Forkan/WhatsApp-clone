@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from "express";
 import { loginSchema, registerSchema } from "../utils/validationSchema";
 import { LoginUser, RegisterUser } from "../types/user.types";
 import { handleError, validateData } from "../utils/common";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
 const prisma = new PrismaClient();
@@ -52,6 +52,7 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
     res.status(201).json({
       message: "User registered successfully",
       data: {
+        id: newUser.id,
         name: newUser.name,
         token,
       },
@@ -86,6 +87,7 @@ export const login: RequestHandler<any, any, LoginUser> = async (
       res.status(200).json({
         message: "Welcome back",
         data: {
+          id: user.id,
           name: user.name,
           token,
         },

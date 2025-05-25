@@ -27,8 +27,8 @@ const Home = () => {
 
       <div
         className={`${
-          mobileSidebar ? "block" : "hidden"
-        } md:block fixed md:relative w-full md:w-2/5 h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-r border-gray-300 dark:border-gray-700`}
+          !mobileSidebar ? "block" : "hidden"
+        } md:block fixed md:relative w-full md:w-1/3 lg:1/4 h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-r border-gray-300 dark:border-gray-700`}
       >
         <Sidebar />
       </div>

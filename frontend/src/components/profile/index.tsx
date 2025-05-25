@@ -1,19 +1,59 @@
 import EditableInput from "./EditableInput";
-import { FaCamera } from "react-icons/fa";
-import { IoMdReturnLeft } from "react-icons/io";
+import EditProfileImage from "./EditProfileImage";
 import Sidebar from "../sidebar";
+import { IoMdReturnLeft } from "react-icons/io";
 import useToggleShow from "../../hooks/useToggleShow";
+import { useState } from "react";
+import { useAuthStore } from "../../store/auth.store";
+import { useUpdateProfileInfo } from "../../hooks/useProfile";
+import { toast } from "react-toastify";
+import Spinner from "../Spinner";
 
 const Profile = () => {
   const { show, toggleVisibility } = useToggleShow();
+  const { user, token, setUser } = useAuthStore();
+  const { mutate, isPending } = useUpdateProfileInfo();
+
+  const [name, setName] = useState(user?.name || "");
+  const [bio, setBio] = useState(user?.bio || "");
+
+  const updateUser = () => {
+    if (!user) return;
+
+    mutate(
+      {
+        data: { name, bio },
+        token,
+        id: user.id,
+      },
+      {
+        onSuccess: (data) => {
+          console.log("data", data);
+          setUser({
+            ...user,
+            name: data?.updateProfileInfo.name,
+            bio: data?.updateProfileInfo.bio,
+          });
+          toast.success(data.message);
+        },
+        onError: () => {
+          toast.error("An unexpected error occurred.");
+        },
+      }
+    );
+  };
+
+  if (isPending) {
+    return <Spinner />
+  }
 
   if (show) {
-    return <Sidebar/>
+    return <Sidebar />;
   }
   return (
     <div className="w-full h-full p-4 overflow-auto">
       <div className="flex items-center mb-6">
-        <button 
+        <button
           className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 transition-transform duration-300 hover:scale-105"
           onClick={toggleVisibility}
         >
@@ -21,26 +61,20 @@ const Profile = () => {
         </button>
         <p className="ml-4 font-semibold text-lg">Profile</p>
       </div>
-
-      <div className="flex flex-col items-center mb-6">
-        <div className="relative">
-          <img
-            src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0="
-            alt="Avatar"
-            className="w-24 h-24 rounded-full object-cover"
-          />
-          <div className="absolute bottom-0 right-0 bg-gray-700 p-2 rounded-full cursor-pointer">
-            <FaCamera className="text-white" />
-          </div>
-        </div>
-        <p className="text-sm mt-2 text-center">Change the profile picture</p>
-        <input type="file" className="hidden" />
-      </div>
-
-      <form className="space-y-4">
-        <EditableInput />
-        <EditableInput />
-        <EditableInput />
+      <EditProfileImage />
+      <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <EditableInput
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          id="name"
+          updateUser={updateUser}
+        />
+        <EditableInput
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          id="bio"
+          updateUser={updateUser}
+        />
       </form>
     </div>
   );

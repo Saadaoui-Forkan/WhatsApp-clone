@@ -26,7 +26,7 @@ const LoginPage = () => {
   ) => {
     mutate(values, {
       onSuccess: (data) => {
-        setUser(data.data.name)
+        setUser(data.data)
         setToken(data.data.token)
         toast.success(data.message)
         navigate('/')
