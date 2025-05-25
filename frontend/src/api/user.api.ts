@@ -40,7 +40,7 @@ export const registerApi = async (data: RegisterFormValues) => {
 
 export const logoutApi = async (token: string) => {
   try {
-    await axios.post(`${process.env.REACT_APP_API_URL}/users/logout`, {
+    await axios.post(`${process.env.REACT_APP_API_URL}/users/logout`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

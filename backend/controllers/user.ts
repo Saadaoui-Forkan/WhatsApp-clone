@@ -83,12 +83,13 @@ export const login: RequestHandler<any, any, LoginUser> = async (
         id: user.id,
         email: user.email,
       });
-
       res.status(200).json({
         message: "Welcome back",
         data: {
           id: user.id,
           name: user.name,
+          bio: user.bio,
+          profilePicture: user.profilePicture,
           token,
         },
       });

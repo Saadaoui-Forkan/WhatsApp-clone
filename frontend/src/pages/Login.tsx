@@ -26,8 +26,14 @@ const LoginPage = () => {
   ) => {
     mutate(values, {
       onSuccess: (data) => {
-        setUser(data.data)
-        setToken(data.data.token)
+        const { id, name, bio, profilePicture, token } = data.data
+        setUser({
+          id,
+          name,
+          bio,
+          photoProfile: profilePicture?.secureUrl ?? ""
+        })
+        setToken(token)
         toast.success(data.message)
         navigate('/')
         actions.resetForm()
