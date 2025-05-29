@@ -6,11 +6,12 @@ interface IUser {
   name: string;
   bio?: string;
   photoProfile?: string;
+  isAccountVerified?: boolean
 }
 
 interface IAuth {
   user: IUser | null;
-  token: string;
+  token: string
   setUser: (user: IUser | null) => void;
   setToken: (token: string) => void
 }

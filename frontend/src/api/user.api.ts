@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { LoginFormValues, RegisterFormValues } from "../types/user.types";
 
+// Login User
 export const loginApi = async (data: LoginFormValues) => {
   try {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, data);
@@ -23,6 +24,7 @@ export const loginApi = async (data: LoginFormValues) => {
   }
 };
 
+// Register User
 export const registerApi = async (data: RegisterFormValues) => {
   try {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/users/register`, data);
@@ -38,6 +40,7 @@ export const registerApi = async (data: RegisterFormValues) => {
   }
 }
 
+// Logout User
 export const logoutApi = async (token: string) => {
   try {
     await axios.post(`${process.env.REACT_APP_API_URL}/users/logout`, {}, {
@@ -50,3 +53,16 @@ export const logoutApi = async (token: string) => {
     console.log(error);
   }
 };
+
+// Verify Email
+export const verifyEmailApi = async ({ userId, token }: { userId: string; token: string }) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/users/${userId}/verify/${token}`
+    )
+    return res.data
+  } catch (error) {
+    throw error
+    
+  } 
+}

@@ -6,6 +6,9 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
 const prisma = new PrismaClient();
+import crypto from "crypto"
+import { sendEmail } from "../utils/nodemailer";
+import { getVerificationEmailTemplate } from "utils/htmlTemplate";
 
 /**
  *  @method  POST
@@ -43,19 +46,23 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
         email: true,
       },
     });
-    // Generate token
-    const token = generateToken(res, {
-      id: newUser.id,
-      email: newUser.email,
-    });
-    // Send data to database
-    res.status(201).json({
-      message: "User registered successfully",
+    // Generate an email verification token
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const vtoken = await prisma.verificationToken.create({
       data: {
-        id: newUser.id,
-        name: newUser.name,
-        token,
-      },
+        userId: newUser.id,
+        token: rawToken
+      }
+    })
+    // Create the verification link
+    const link = `${process.env.VERIFY_EMAIL_URL}/${newUser.id}/verify/${vtoken.token}`
+    // Prepare the email content and send it
+    const htmlTemplate = getVerificationEmailTemplate(link);
+    await sendEmail(newUser.email, "Verify Your Email Address", htmlTemplate);
+
+    // Respond with success message
+    res.status(201).json({
+      message: "Registration successful! Please verify your email address.",
     });
   } catch (err) {
     handleError(res, err as Error);
@@ -79,6 +86,12 @@ export const login: RequestHandler<any, any, LoginUser> = async (
     if (!validationPassed) return;
     const user = await prisma.user.findUnique({ where: { email } });
     if (user && bcrypt.compareSync(password, user.password)) {
+      // Check if email is verified
+      if (!user.isAccountVerified) {
+        res.status(400).json({ message: "Please verify your email address before logging in." });
+        return;
+      }
+      // Generate authentication token
       const token = generateToken(res, {
         id: user.id,
         email: user.email,
@@ -150,3 +163,55 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     handleError(res, err as Error);
   }
 };
+
+/**
+ *  @method  GET
+ *  @route   /api/users/:userId/verify/:token
+ *  @desc    Verify Account
+ *  @access  public
+*/
+export const verifyAccount = async (req: Request, res: Response) => {
+  try {
+    const { userId, token } = req.params
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid verification link." })
+    }
+    if (user.isAccountVerified) {
+      return res.status(200).json({
+        message: "Your account is already verified.",
+        user,
+      });
+    }
+    // Check if token exists for this user
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { userId: user?.id, token },
+    });
+    if (!verificationToken) {
+      return res.status(400).json({ message: "Invalid or expired verification link." })
+    }
+    // Mark account as verified
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        isAccountVerified: true,
+      },
+    });
+    // Delete used token
+    await prisma.verificationToken.delete({
+      where: { id: verificationToken?.id },
+    });
+    // Respond with success
+    return res
+      .status(200)
+      .json({
+        message: "Your account has been successfully verified.",
+        user: updatedUser,
+      });
+  } catch (error) {
+    handleError(res, error as Error)
+  }
+}

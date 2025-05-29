@@ -9,45 +9,46 @@ import { registerSchema } from "../utils/schemas";
 import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
 import { useRegister } from "../hooks/useAuth";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
-import { useAuthStore } from "../store/auth.store";
 import useToggleShow from "../hooks/useToggleShow";
+import { useState } from "react";
+import EmailSentConfirmation from "../components/EmailSentConfirmation";
 
 const Register = () => {
-  const navigate = useNavigate()
+  const [openVerifyEmailModel, setOpenVerifyEmailModel] = useState(false);
   const { show, toggleVisibility } = useToggleShow();
-  const { setUser, setToken } = useAuthStore()
-  const { mutate, isPending } = useRegister()
-  
+  const { mutate, isPending } = useRegister();
+
   const onSubmit = (
     values: RegisterFormValues,
     actions: FormikHelpers<RegisterFormValues>
   ) => {
     mutate(values, {
       onSuccess: (data) => {
-        setUser(data.data)
-        setToken(data.data.token)
-        toast.success(data.message)
-        navigate('/')
-        actions.resetForm()
+        toast.success(data.message);
+        setOpenVerifyEmailModel(true);
+        
+        actions.resetForm();
       },
       onError: (error: unknown) => {
         if (Array.isArray(error)) {
-          error.forEach(err => toast.error(err))
+          error.forEach((err) => toast.error(err));
         } else if (typeof error === "string") {
-          toast.error(error)
+          toast.error(error);
         } else if (error instanceof Error) {
           toast.error(error.message);
         } else {
           toast.error("An unexpected error occurred.");
         }
-        actions.resetForm()
-      }
-    })
+        actions.resetForm();
+      },
+    });
   };
   return (
     <div className="flex items-center justify-center p-4">
+      {openVerifyEmailModel && (
+        <EmailSentConfirmation/>
+      )}
       <div className="w-full max-w-md">
         <AuthHeader title="Join us" subtitle="Create your account in seconds" />
 
@@ -59,7 +60,7 @@ const Register = () => {
           {({ errors, touched }) => (
             <Form className="space-y-6">
               <div className="space-y-4">
-              <Field
+                <Field
                   type="text"
                   name="name"
                   className={`${InputClass}`}
@@ -80,17 +81,15 @@ const Register = () => {
                     className={`${InputClass}`}
                     placeholder="Password ..."
                   />
-                  <div
-                    onClick={toggleVisibility}
-                    className={`${IconBtnClass}`}                  >
-                    {show ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
+                  <div onClick={toggleVisibility} className={`${IconBtnClass}`}>
+                    {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                   </div>
                 </div>
-                <ErrorMessage errors={errors} touched={touched} name="password" />
+                <ErrorMessage
+                  errors={errors}
+                  touched={touched}
+                  name="password"
+                />
                 <div className="relative">
                   <Field
                     type={show ? "text" : "password"}
@@ -98,22 +97,21 @@ const Register = () => {
                     className={`${InputClass}`}
                     placeholder="Confirm password ..."
                   />
-                  <div
-                    onClick={toggleVisibility}
-                    className={`${IconBtnClass}`}
-                  >
-                    {show ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
+                  <div onClick={toggleVisibility} className={`${IconBtnClass}`}>
+                    {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                   </div>
                 </div>
-                <ErrorMessage errors={errors} touched={touched} name="confirmPassword" />
+                <ErrorMessage
+                  errors={errors}
+                  touched={touched}
+                  name="confirmPassword"
+                />
               </div>
               <button
                 type="submit"
-                className={`${BtnClass} ${isPending ? 'opacity-60 cursor-not-allowed' : ''}`}
+                className={`${BtnClass} ${
+                  isPending ? "opacity-60 cursor-not-allowed" : ""
+                }`}
                 disabled={isPending}
               >
                 {isPending ? <Spinner small /> : "Register"}
@@ -121,7 +119,7 @@ const Register = () => {
             </Form>
           )}
         </Formik>
-        <AuthLink to="/login" link="Login" text="Already have an account?"/>
+        <AuthLink to="/login" link="Login" text="Already have an account?" />
       </div>
     </div>
   );

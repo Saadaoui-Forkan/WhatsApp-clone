@@ -10,6 +10,7 @@ import { useAuthStore } from "./store/auth.store";
 import NotFound from "./components/NotFound";
 import NotUserSelected from "./components/chat/NoUserSelected";
 import Chat from "./components/chat";
+import VerifyEmail from "./pages/VerifyEmail";
 
 const Router = () => {
   const { token } = useAuthStore();
@@ -32,6 +33,10 @@ const Router = () => {
     {
       path: "register",
       element: !token ? <Register /> : <Navigate to="/" />,
+    },
+    {
+      path: "users/:userId/verify/:token",
+      element: !token ? <VerifyEmail /> : <Navigate to="/" />,
     },
     {
       path: "login",
