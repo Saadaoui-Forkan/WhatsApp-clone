@@ -3,6 +3,7 @@ import 'dotenv/config';
 import cors from "cors";
 import userRouter from "./routes/userRoute";
 import profileRouter from "./routes/profileRoute";
+import passwordRouter from "./routes/passwordRoute";
 
 // dotenv.config();
 
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/users', userRouter)
 app.use('/api/profile', profileRouter)
+app.use('/api/users/password', passwordRouter)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

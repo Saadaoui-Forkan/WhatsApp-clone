@@ -7,4 +7,13 @@ const useToggleShow = () => {
   return {show, toggleVisibility}
 }
 
-export default useToggleShow;
+const useShowConfirmPassword = () => {
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const toggleShowConfirmPassword = () => setShowConfirmPassword(prev => !prev);
+  return { showConfirmPassword, toggleShowConfirmPassword }
+}
+
+export {
+  useToggleShow,
+  useShowConfirmPassword,
+};

@@ -15,7 +15,7 @@ import { getVerificationEmailTemplate } from "utils/htmlTemplate";
  *  @route   /api/users/register
  *  @desc    Create New User
  *  @access  public
- */
+*/
 export const register: RequestHandler<any, any, RegisterUser> = async (
   req: Request,
   res: Response
@@ -55,7 +55,7 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
       }
     })
     // Create the verification link
-    const link = `${process.env.VERIFY_EMAIL_URL}/${newUser.id}/verify/${vtoken.token}`
+    const link = `${process.env.CLIENT_DOMAIN_URL}/users/${newUser.id}/verify/${vtoken.token}`
     // Prepare the email content and send it
     const htmlTemplate = getVerificationEmailTemplate(link);
     await sendEmail(newUser.email, "Verify Your Email Address", htmlTemplate);
@@ -170,7 +170,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
  *  @desc    Verify Account
  *  @access  public
 */
-export const verifyAccount = async (req: Request, res: Response) => {
+export const verifyAccount = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId, token } = req.params
     // Check if user exists
@@ -178,20 +178,23 @@ export const verifyAccount = async (req: Request, res: Response) => {
       where: { id: userId }
     });
     if (!user) {
-      return res.status(400).json({ message: "Invalid verification link." })
+      res.status(400).json({ message: "Invalid verification link." })
+      return
     }
-    if (user.isAccountVerified) {
-      return res.status(200).json({
+    if (user?.isAccountVerified) {
+      res.status(200).json({
         message: "Your account is already verified.",
         user,
       });
+      return
     }
     // Check if token exists for this user
     const verificationToken = await prisma.verificationToken.findFirst({
       where: { userId: user?.id, token },
     });
     if (!verificationToken) {
-      return res.status(400).json({ message: "Invalid or expired verification link." })
+      res.status(400).json({ message: "Invalid or expired verification link." })
+      return
     }
     // Mark account as verified
     const updatedUser = await prisma.user.update({
@@ -205,7 +208,7 @@ export const verifyAccount = async (req: Request, res: Response) => {
       where: { id: verificationToken?.id },
     });
     // Respond with success
-    return res
+    res
       .status(200)
       .json({
         message: "Your account has been successfully verified.",

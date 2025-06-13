@@ -2,12 +2,10 @@ import { AiOutlineCheckCircle, AiOutlineWarning } from 'react-icons/ai'
 import { Link, useParams } from 'react-router-dom'
 import { useVerifyEmail } from '../hooks/useAuth'
 import { useEffect } from 'react'
-import { useAuthStore } from '../store/auth.store'
 import Spinner from '../components/Spinner'
 import { AxiosError } from 'axios'
 
 const VerifyEmail = () => {
-  const { user } = useAuthStore()
   const { token, userId } = useParams()
   const { mutate, data, isPending, error, isError } = useVerifyEmail()
   const axiosError = error as AxiosError<{ message: string }>

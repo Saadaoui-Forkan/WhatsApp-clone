@@ -24,3 +24,8 @@ body {
     -webkit-text-fill-color: theme('colors.gray.100') !important;
   }
 }
+
+.Toastify__toast {
+  font-family: "Cairo", sans-serif !important;
+  font-size: 16px
+}

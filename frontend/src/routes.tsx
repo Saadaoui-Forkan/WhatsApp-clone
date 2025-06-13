@@ -11,6 +11,8 @@ import NotFound from "./components/NotFound";
 import NotUserSelected from "./components/chat/NoUserSelected";
 import Chat from "./components/chat";
 import VerifyEmail from "./pages/VerifyEmail";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const Router = () => {
   const { token } = useAuthStore();
@@ -41,6 +43,14 @@ const Router = () => {
     {
       path: "login",
       element: !token ? <Login /> : <Navigate to="/"/>,
+    },
+    {
+      path: "forgot-password",
+      element: !token ? <ForgotPassword /> : <Navigate to="/"/>,
+    },
+    {
+      path: "reset-password/:userId/:token",
+      element: !token ? <ResetPassword /> : <Navigate to="/"/>,
     },
     {
       path: "*",

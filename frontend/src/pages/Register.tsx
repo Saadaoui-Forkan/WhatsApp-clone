@@ -10,13 +10,14 @@ import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
 import { useRegister } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
-import useToggleShow from "../hooks/useToggleShow";
+import { useShowConfirmPassword, useToggleShow } from "../hooks/useToggleShow";
 import { useState } from "react";
 import EmailSentConfirmation from "../components/EmailSentConfirmation";
 
 const Register = () => {
   const [openVerifyEmailModel, setOpenVerifyEmailModel] = useState(false);
   const { show, toggleVisibility } = useToggleShow();
+  const { showConfirmPassword, toggleShowConfirmPassword } = useShowConfirmPassword();
   const { mutate, isPending } = useRegister();
 
   const onSubmit = (
@@ -92,13 +93,13 @@ const Register = () => {
                 />
                 <div className="relative">
                   <Field
-                    type={show ? "text" : "password"}
+                    type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
                     className={`${InputClass}`}
                     placeholder="Confirm password ..."
                   />
-                  <div onClick={toggleVisibility} className={`${IconBtnClass}`}>
-                    {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                  <div onClick={toggleShowConfirmPassword} className={`${IconBtnClass}`}>
+                    {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                   </div>
                 </div>
                 <ErrorMessage

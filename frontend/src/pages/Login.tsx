@@ -8,11 +8,11 @@ import { loginInitialValues } from "../utils/formInitialValues";
 import { loginSchema } from "../utils/schemas";
 import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
 import { useLogin } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth.store";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
-import useToggleShow from "../hooks/useToggleShow";
+import { useToggleShow } from "../hooks/useToggleShow";
 
 const LoginPage = () => {
   const { show, toggleVisibility } = useToggleShow();
@@ -74,6 +74,7 @@ const LoginPage = () => {
                   placeholder="Email address ..."
                 />
                 <ErrorMessage errors={errors} touched={touched} name="email" />
+
                 <div className="relative">
                   <Field
                     type={show ? "text" : "password"}
@@ -81,30 +82,43 @@ const LoginPage = () => {
                     className={`${InputClass}`}
                     placeholder="Password ..."
                   />
-                  <div
-                    onClick={toggleVisibility}
-                    className={`${IconBtnClass}`}
-                  >
-                    {show ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
+                  <div onClick={toggleVisibility} className={`${IconBtnClass}`}>
+                    {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                   </div>
                 </div>
-                <ErrorMessage errors={errors} touched={touched} name="password" />
+                <ErrorMessage
+                  errors={errors}
+                  touched={touched}
+                  name="password"
+                />
               </div>
+
               <button
                 type="submit"
-                className={`${BtnClass} ${isPending ? 'opacity-60 cursor-not-allowed' : ''}`}
+                className={`${BtnClass} ${
+                  isPending ? "opacity-60 cursor-not-allowed" : ""
+                }`}
                 disabled={isPending}
               >
                 {isPending ? <Spinner small /> : "Login"}
               </button>
+
+              <div className="text-center">
+                <Link
+                  to="/forgot-password"
+                  className="inline-block text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200"
+                >
+                  Forgot password?
+                </Link>
+              </div>
             </Form>
           )}
         </Formik>
-        <AuthLink to="/register" link="Register" text="Don't have an account?"/>
+        <AuthLink
+          to="/register"
+          link="Register"
+          text="Don't have an account?"
+        />
       </div>
     </div>
   );

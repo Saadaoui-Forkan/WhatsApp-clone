@@ -2,7 +2,7 @@ import EditableInput from "./EditableInput";
 import EditProfileImage from "./EditProfileImage";
 import Sidebar from "../sidebar";
 import { IoMdReturnLeft } from "react-icons/io";
-import useToggleShow from "../../hooks/useToggleShow";
+import { useToggleShow } from "../../hooks/useToggleShow";
 import { useState } from "react";
 import { useAuthStore } from "../../store/auth.store";
 import { useUpdateProfileInfo } from "../../hooks/useProfile";

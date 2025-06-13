@@ -6,7 +6,11 @@ import { ToastContainer } from 'react-toastify'
 function App() {
   return(
     <>
-      <ToastContainer theme="colored" autoClose={3000}/>
+      <ToastContainer 
+        autoClose={3000}
+        position="top-right"
+        theme="colored"
+      />
       <Theme/>
       <div className="bg-white dark:bg-gray-700">
         <Router />

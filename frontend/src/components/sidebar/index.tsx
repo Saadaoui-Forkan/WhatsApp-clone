@@ -2,7 +2,7 @@ import { FaSearch } from "react-icons/fa";
 import { IoFilter } from "react-icons/io5";
 import MessageItem from "./MessageItem";
 import Profile from "../profile";
-import useToggleShow from "../../hooks/useToggleShow";
+import { useToggleShow } from "../../hooks/useToggleShow";
 import { useAuthStore } from "../../store/auth.store";
 import { defaultAvatar } from "../../utils/constantes";
 
