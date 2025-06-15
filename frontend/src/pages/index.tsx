@@ -3,11 +3,17 @@ import Sidebar from "../components/sidebar";
 import { Outlet } from "react-router-dom";
 import io from "socket.io-client"
 import { useSocketStore } from "../store/socket.store";
+import { useAuthStore } from "../store/auth.store";
 
 const Home = () => {
   const { setSocket } = useSocketStore()
+  const { token } = useAuthStore()
   useEffect(() => {
-    const socket = io('http://localhost:6000')
+    const socket = io('http://localhost:5000', {
+      query: {
+        token: token
+      }
+    })
     setSocket(socket)
 
     socket.on('connect', () => {

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { handleError } from "../utils/common";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "../types/user.types";
+import { ExtendedError, Socket } from "socket.io";
 
 export const isAuth = (
   req: Request,
@@ -25,3 +26,19 @@ export const isAuth = (
     handleError(res, err as Error);
   }
 };
+
+export const isSocketAuth = (socket: Socket, next: (err?: ExtendedError) => void) => {
+  const token = socket.handshake.query.token as string
+  if(!socket.handshake.query || !token) {
+    return next(new Error("Authentication Invalid"))
+  }
+  try {
+    const privateKey = process.env.ACCESS_TOKEN_SECRET as string;
+    const decoded = jwt.verify(token, privateKey) as JwtPayload
+    socket.data.userInfo = decoded.userInfo
+    next()
+  } catch (e) {
+    next(e as ExtendedError)
+  }
+}
+ 

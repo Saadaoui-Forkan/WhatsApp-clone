@@ -6,6 +6,7 @@ import profileRouter from "./routes/profileRoute";
 import passwordRouter from "./routes/passwordRoute";
 import http from "http";
 import { Server } from "socket.io"
+import { isSocketAuth } from "middlewares/auth";
 
 const app = express();
 const server = http.createServer(app)
@@ -16,6 +17,8 @@ const io = new Server(server, {
     credentials: true
   }
 })
+
+io.use(isSocketAuth)
 
 app.use(express.json());
 app.use(cors({
@@ -32,7 +35,7 @@ app.use('/api/profile', profileRouter)
 app.use('/api/users/password', passwordRouter)
 
 io.on("connection", (socket) => {
-  console.log("connected user: ", socket)
+  console.log("connected user: ", socket.data)
 
   socket.on("disconnected", () => {
     console.log("disconnected user: ", socket.id)
