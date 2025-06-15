@@ -4,16 +4,22 @@ import cors from "cors";
 import userRouter from "./routes/userRoute";
 import profileRouter from "./routes/profileRoute";
 import passwordRouter from "./routes/passwordRoute";
-
-// dotenv.config();
+import http from "http";
+import { Server } from "socket.io"
 
 const app = express();
-app.use(express.json());
-
+const server = http.createServer(app)
 const PORT = process.env.PORT || 5001;
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_DOMAIN_URL,
+    credentials: true
+  }
+})
 
+app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.CLIENT_DOMAIN_URL,
   credentials: true,
 }));
 
@@ -25,7 +31,15 @@ app.use('/api/users', userRouter)
 app.use('/api/profile', profileRouter)
 app.use('/api/users/password', passwordRouter)
 
-app.listen(PORT, () => {
+io.on("connection", (socket) => {
+  console.log("connected user: ", socket)
+
+  socket.on("disconnected", () => {
+    console.log("disconnected user: ", socket.id)
+  })
+})
+
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 

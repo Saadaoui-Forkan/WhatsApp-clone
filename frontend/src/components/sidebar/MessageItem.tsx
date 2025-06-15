@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const MessageItem = () => {
   return (
@@ -8,6 +8,7 @@ const MessageItem = () => {
         alt="profilePicture"
         className="w-10 h-10 rounded-full object-cover"
       />
+      {/* <Avatar contact /> */}
       <div className="ml-3 flex-grow">
         <p className="font-medium text-sm">sender</p>
         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">

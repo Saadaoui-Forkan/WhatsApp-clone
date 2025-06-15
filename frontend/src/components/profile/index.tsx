@@ -1,16 +1,18 @@
 import EditableInput from "./EditableInput";
 import EditProfileImage from "./EditProfileImage";
-import Sidebar from "../sidebar";
 import { IoMdReturnLeft } from "react-icons/io";
-import { useToggleShow } from "../../hooks/useToggleShow";
 import { useState } from "react";
 import { useAuthStore } from "../../store/auth.store";
 import { useUpdateProfileInfo } from "../../hooks/useProfile";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner";
 
-const Profile = () => {
-  const { show, toggleVisibility } = useToggleShow();
+type ProfileProps = {
+  onclose: () => void;
+};
+
+
+const Profile = ({onclose}: ProfileProps) => {
   const { user, token, setUser } = useAuthStore();
   const { mutate, isPending } = useUpdateProfileInfo();
 
@@ -46,16 +48,12 @@ const Profile = () => {
   if (isPending) {
     return <Spinner />
   }
-
-  if (show) {
-    return <Sidebar />;
-  }
   return (
     <div className="w-full h-full p-4 overflow-auto">
       <div className="flex items-center mb-6">
         <button
           className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 transition-transform duration-300 hover:scale-105"
-          onClick={toggleVisibility}
+          onClick={onclose}
         >
           <IoMdReturnLeft size={18} />
         </button>
