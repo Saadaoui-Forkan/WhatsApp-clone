@@ -23,3 +23,31 @@ export interface AuthLinkProps {
   text: string;
   link: string;
 }
+
+export interface IUser {
+  id: string;
+  name: string;
+  bio?: string;
+  photoProfile?: string;
+  isAccountVerified?: boolean
+}
+
+export interface IFriend {
+  id: string;
+  name: string;
+  bio?: string;
+  profilePicture: {
+    publicId: string;
+    secureUrl: string;
+  };
+}
+
+export interface IAuth {
+  user: IUser | null
+  token: string
+  setUser: (user: IUser | null) => void
+  setToken: (token: string) => void
+  friends: IFriend[]
+  setFriends: (friends: IFriend[]) => void
+  addFriend: (friend: IFriend) => void
+}

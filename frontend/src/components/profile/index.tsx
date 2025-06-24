@@ -30,7 +30,6 @@ const Profile = ({onclose}: ProfileProps) => {
       },
       {
         onSuccess: (data) => {
-          console.log("data", data);
           setUser({
             ...user,
             name: data?.updateProfileInfo.name,

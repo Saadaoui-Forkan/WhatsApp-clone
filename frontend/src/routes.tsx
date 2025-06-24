@@ -27,7 +27,7 @@ const Router = () => {
           element: <NotUserSelected/>
         },
         {
-          path:"receiverId",
+          path:":receiverId",
           element: <Chat/>
         }
       ]

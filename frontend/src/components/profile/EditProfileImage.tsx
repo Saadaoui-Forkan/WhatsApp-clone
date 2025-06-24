@@ -1,21 +1,17 @@
 import { FaCamera } from "react-icons/fa";
 import { useUpdateProfilePhoto } from "../../hooks/useProfile";
 import { useAuthStore } from "../../store/auth.store";
-import { useState } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner";
 import { defaultAvatar } from "../../utils/constantes";
 
 const EditProfileImage = () => {
   const { user, token, setUser } = useAuthStore();
-  const [file, setFile] = useState<File | null>(null);
   const { mutate, isPending } = useUpdateProfilePhoto();
-
+  
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      setFile(selectedFile);
-      updateProfilePhoto(selectedFile)
+    if (e.target.files?.[0]) {
+      updateProfilePhoto(e.target.files[0]);
     }
   };
 

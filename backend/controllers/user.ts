@@ -5,10 +5,12 @@ import { handleError, validateData } from "../utils/common";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
-const prisma = new PrismaClient();
 import crypto from "crypto"
 import { sendEmail } from "../utils/nodemailer";
 import { getVerificationEmailTemplate } from "utils/htmlTemplate";
+import { io } from "index";
+
+const prisma = new PrismaClient();
 
 /**
  *  @method  POST
@@ -202,11 +204,20 @@ export const verifyAccount = async (req: Request, res: Response): Promise<void> 
       data: {
         isAccountVerified: true,
       },
+      select: { 
+        id: true, 
+        name: true, 
+        email: true,
+        bio: true,
+        profilePicture: true
+      }
     });
     // Delete used token
     await prisma.verificationToken.delete({
       where: { id: verificationToken?.id },
     });
+    // Emit the event AFTER successful verification
+    io.emit("user_created", updatedUser)
     // Respond with success
     res
       .status(200)
@@ -218,3 +229,41 @@ export const verifyAccount = async (req: Request, res: Response): Promise<void> 
     handleError(res, error as Error)
   }
 }
+
+/**
+ *  @method  GET
+ *  @route   /api/users/friends
+ *  @desc    Get all users except the currently authenticated user (get friends)
+ *  @access  private
+*/
+export const getFriends = async (
+  req: Request,
+  res: Response
+): Promise<void> => { 
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: "Not Authenticated" });
+      return; 
+    }
+    const currentUserId = req.user.id
+    
+    const friends = await prisma.user.findMany({
+      where: {
+        NOT: {
+          id: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        bio: true, 
+        profilePicture: true,
+      },
+    });
+    
+    res.status(200).json({ friends })
+  } catch (err) {
+    handleError(res, err as Error);
+  }
+};

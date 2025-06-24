@@ -1,20 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware';
-
-interface IUser {
-  id: string;
-  name: string;
-  bio?: string;
-  photoProfile?: string;
-  isAccountVerified?: boolean
-}
-
-interface IAuth {
-  user: IUser | null;
-  token: string
-  setUser: (user: IUser | null) => void;
-  setToken: (token: string) => void
-}
+import { IAuth, IFriend } from '../types/user.types';
 
 export const useAuthStore = create<IAuth>()(
   persist(
@@ -23,6 +9,10 @@ export const useAuthStore = create<IAuth>()(
       token: "",
       setUser: (user) => set({ user }),
       setToken: (token) => set({ token }),
+      friends: [],
+      setFriends: (friends) => set({friends}),
+      addFriend: (friend: IFriend) => 
+        set((state) => ({ friends: [...state.friends, friend] }))
     }),
     { name: 'auth' }
   )

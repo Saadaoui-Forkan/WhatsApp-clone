@@ -1,20 +1,30 @@
+import { useLocation } from "react-router-dom";
+import { useAuthStore } from "../../store/auth.store";
+import { defaultAvatar } from "../../utils/constantes";
 import { Logout } from "./Logout";
+import { getContactById } from "../../utils/helpers";
 
 const ChatHeader = () => {
+  const location = useLocation()
+  const receiverId = location.pathname.slice(1)
+  const { friends } = useAuthStore();
+  const contact = getContactById(friends, receiverId);
   return (
     <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-      <Logout /> 
-      <div className="flex items-center gap-3">
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRapmZuEf4Nwup-GS-blhVEeNAs_sM22IUrDw&s"
-          alt="Avatar"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div>
-          <p className="font-semibold text-sm">User Name</p>
-          <p className="text-xs text-green-500">Online</p>
+      <Logout />
+      {contact && (
+        <div className="flex items-center gap-3">
+          <img
+            src={contact?.profilePicture?.secureUrl || defaultAvatar}
+            alt="Avatar"
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          <div>
+            <p className="font-semibold text-sm">{contact.name}</p>
+            <p className="text-xs text-green-500">Online</p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

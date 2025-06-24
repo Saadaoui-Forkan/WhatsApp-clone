@@ -4,12 +4,13 @@ import { defaultAvatar } from "../../utils/constantes";
 import Profile from "../profile";
 import Search from "./Search";
 import MessageItem from "./MessageItem";
+import { FiFolder } from "react-icons/fi";
 
 const UserPanel = () => {
-  const { user } = useAuthStore();
+  const { user, friends } = useAuthStore();
   const [showProfile, setShowProfile] = useState(false);
 
-  if (showProfile) return <Profile onclose={() => setShowProfile(false)} />
+  if (showProfile) return <Profile onclose={() => setShowProfile(false)} />;
 
   return (
     <div className="w-full h-full flex flex-col p-4 overflow-y-auto">
@@ -29,8 +30,21 @@ const UserPanel = () => {
       </div>
       <Search />
       <div className="space-y-2">
-        <MessageItem />
-        <MessageItem />
+        {friends.length > 0 ? (
+          friends.map((friend) => (
+            <MessageItem
+              key={friend.id}
+              id={friend.id}
+              name={friend.name}
+              avatar={friend?.profilePicture?.secureUrl || defaultAvatar}
+            />
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center mt-10 text-center text-gray-500">
+            <FiFolder className="w-12 h-12 mb-3 text-gray-400" />
+            <p className="text-sm font-medium">No contacts found...</p>
+          </div>
+        )}
       </div>
     </div>
   );

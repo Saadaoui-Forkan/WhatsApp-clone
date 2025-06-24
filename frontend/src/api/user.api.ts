@@ -66,3 +66,21 @@ export const verifyEmailApi = async ({ userId, token }: { userId: string; token:
     
   } 
 }
+
+//  Get all users except the currently authenticated user (get friends)
+export const fetchFriendsApi = async (token: string) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/users/friends`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+};

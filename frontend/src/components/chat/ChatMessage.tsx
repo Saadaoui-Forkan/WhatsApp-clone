@@ -1,4 +1,5 @@
 import { ChatMessageProps } from "../../types/message.types";
+import { formatMessageDate } from "../../utils/helpers";
 
 const ChatMessage = ({ isSender = false, content, createdAt }: ChatMessageProps) => {
   return (
@@ -13,10 +14,10 @@ const ChatMessage = ({ isSender = false, content, createdAt }: ChatMessageProps)
         <p className="text-sm mb-1">{content}</p>
         <p
           className={`text-xs text-right ${
-            isSender ? "text-purple-200" : "text-gray-500 dark:text-gray-300"
+            isSender ? "text-purple-200" : "text-gray-600 dark:text-gray-200"
           }`}
         >
-          {createdAt}
+          {formatMessageDate(createdAt)}
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import { loginApi, logoutApi, registerApi, verifyEmailApi } from "../api/user.api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { fetchFriendsApi, loginApi, logoutApi, registerApi, verifyEmailApi } from "../api/user.api";
 
 export const useLogin = () => {
   return useMutation({
@@ -22,5 +22,13 @@ export const useLogout = () => {
 export const useVerifyEmail = () => {
   return useMutation({
     mutationFn: verifyEmailApi
+  })
+}
+
+export const useFetchFriends = (token: string) => {
+  return useQuery({
+    queryKey: ['friends', token],
+    queryFn: () => fetchFriendsApi(token!),
+    enabled: !!token, 
   })
 }
