@@ -245,19 +245,21 @@ export const getFriends = async (
       res.status(401).json({ error: "Not Authenticated" });
       return; 
     }
-    const currentUserId = req.user.id
-    
+    const currentUserId = req.user.id;
+
     const friends = await prisma.user.findMany({
       where: {
-        NOT: {
-          id: currentUserId,
-        },
+        AND: [
+          {
+            NOT: { id: currentUserId },
+          },
+        ],
       },
       select: {
         id: true,
         name: true,
         email: true,
-        bio: true, 
+        bio: true,
         profilePicture: true,
       },
     });

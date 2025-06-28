@@ -12,7 +12,9 @@ export const useAuthStore = create<IAuth>()(
       friends: [],
       setFriends: (friends) => set({friends}),
       addFriend: (friend: IFriend) => 
-        set((state) => ({ friends: [...state.friends, friend] }))
+        set((state) => ({ friends: [...state.friends, friend] })),
+      typing: false,
+      setTyping: (typing) => set({ typing })
     }),
     { name: 'auth' }
   )

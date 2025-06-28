@@ -41,13 +41,13 @@ app.use('/api/messages', isAuth, messageRouter)
 
 io.on("connection", (socket) => {
   console.log("connected user: ", socket.data.userInfo)
+  const userId = socket.data.userInfo.id;
+  socket.join(userId);
 
   socket.on("disconnected", () => {
     console.log("disconnected user: ", socket.id)
   })
 
-  const userId = socket.data.userInfo.id;
-  socket.join(userId);
   socket.on("send_message", async({receiverId, content}) => {
     const senderId = userId
     const message = await prisma.message.create({
@@ -59,6 +59,31 @@ io.on("connection", (socket) => {
     });
 
     io.to([receiverId, senderId]).emit("receive_message", message)
+  })
+
+  socket.on("typing", (receiverId) => {
+    socket.to(receiverId).emit("typing", userId)
+  })
+
+  socket.on("stop_typing", (receiverId) => {
+    socket.to(receiverId).emit("stop_typing", userId)
+  })
+
+  socket.on("seen", async(receiverId) => {
+    const senderId = userId
+
+    await prisma.message.updateMany({
+      where: {
+        senderId,
+        receiverId,
+        seen: false,
+      },
+      data: {
+        seen: true,
+      },
+    });
+
+    io.emit("seen", senderId)
   })
 })
 

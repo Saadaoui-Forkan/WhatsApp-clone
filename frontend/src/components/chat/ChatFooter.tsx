@@ -1,6 +1,6 @@
 import { TbSend } from "react-icons/tb";
 import { InputClass } from "../../utils/classNames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSocketStore } from "../../store/socket.store";
 import { useLocation } from "react-router-dom";
 
@@ -26,12 +26,22 @@ const ChatFooter = () => {
     setInput("")
     setError(false)
   }
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
+
+  useEffect(() => {
+    if (input !== "") {
+      socket?.emit("typing", receiverId)
+    } else {
+      socket?.emit("stop_typing", receiverId)
+    }
+  }, [input, receiverId, socket])
+  
   return (
     <div className="p-4 border-t border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
       <label htmlFor="chat" className="sr-only">

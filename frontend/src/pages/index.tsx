@@ -13,7 +13,7 @@ const Sidebar = lazy(() => import("../components/sidebar"));
 
 const Home = () => {
   const { setSocket } = useSocketStore();
-  const { token, user, setFriends, addFriend } = useAuthStore();
+  const { token, user, setFriends, addFriend, setTyping } = useAuthStore();
   const { setMessages, addMessage } = useMessageStore()
   const {
     data: friendsData,
@@ -50,6 +50,9 @@ const Home = () => {
       addMessage(message);
     });
 
+    socket.on("typing", () => setTyping(true))
+    socket.on("stop_typing", () => setTyping(false))
+
     socket.on("disconnect", () => {
       console.log("disconnected from the server");
     });
@@ -57,7 +60,7 @@ const Home = () => {
     return () => {
       socket.disconnect();
     };
-  }, [token]);
+  }, [token, addFriend, addMessage, setSocket, setTyping, user?.id]);
 
   useEffect(() => {
     if (friendsData?.friends) {

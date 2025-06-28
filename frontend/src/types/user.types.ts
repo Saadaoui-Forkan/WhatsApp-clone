@@ -50,4 +50,6 @@ export interface IAuth {
   friends: IFriend[]
   setFriends: (friends: IFriend[]) => void
   addFriend: (friend: IFriend) => void
+  typing: boolean;
+  setTyping: (typing: boolean) => void;
 }

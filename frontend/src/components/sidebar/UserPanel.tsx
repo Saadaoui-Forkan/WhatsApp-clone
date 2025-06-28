@@ -1,14 +1,44 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useAuthStore } from "../../store/auth.store";
 import { defaultAvatar } from "../../utils/constantes";
 import Profile from "../profile";
 import Search from "./Search";
 import MessageItem from "./MessageItem";
 import { FiFolder } from "react-icons/fi";
+import { useMessageStore } from "../../store/message.store";
+import { getReceiverMessages } from "../../utils/helpers";
+import { IFriend } from "../../types/user.types";
 
 const UserPanel = () => {
   const { user, friends } = useAuthStore();
+  const { messages } = useMessageStore();
   const [showProfile, setShowProfile] = useState(false);
+  const [search, setSearch] = useState("");
+  const [showUnseenMessages, setShowUnseenMessages] = useState(false);
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+
+  const searchedFriends = friends.filter((friend) =>
+    friend.name.toLowerCase().includes(search.toLowerCase().trim())
+  );
+
+  const handleShowUnseenMessages = () => {
+    setShowUnseenMessages((val) => !val);
+  };
+
+  const unseenMessagesContacts = (contact: IFriend) => {
+    if (!showUnseenMessages) return true;
+
+    const contactMessages = getReceiverMessages(messages, contact.id);
+
+    const containUnseenMessages = contactMessages.some(
+      (message) => !message.seen
+    );
+
+    return containUnseenMessages;
+  };
 
   if (showProfile) return <Profile onclose={() => setShowProfile(false)} />;
 
@@ -28,17 +58,23 @@ const UserPanel = () => {
           {user?.bio && <p className="text-xs">{user.bio}</p>}
         </div>
       </div>
-      <Search />
+      <Search
+        search={search}
+        handleSearch={handleSearch}
+        handleShowUnseenMessages={handleShowUnseenMessages}
+      />
       <div className="space-y-2">
-        {friends.length > 0 ? (
-          friends.map((friend) => (
-            <MessageItem
-              key={friend.id}
-              id={friend.id}
-              name={friend.name}
-              avatar={friend?.profilePicture?.secureUrl || defaultAvatar}
-            />
-          ))
+        {searchedFriends.length > 0 ? (
+          searchedFriends
+            .filter(unseenMessagesContacts)
+            .map((friend) => (
+              <MessageItem
+                key={friend.id}
+                id={friend.id}
+                name={friend.name}
+                avatar={friend?.profilePicture?.secureUrl || defaultAvatar}
+              />
+            ))
         ) : (
           <div className="flex flex-col items-center justify-center mt-10 text-center text-gray-500">
             <FiFolder className="w-12 h-12 mb-3 text-gray-400" />
