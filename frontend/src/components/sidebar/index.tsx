@@ -26,10 +26,10 @@ export default function Sidebar() {
 
       <div
         className={`${
-          !mobileSidebar ? "block" : "hidden"
+          mobileSidebar ? "block" : "hidden"
         } md:block fixed md:relative w-full md:w-1/3 lg:w-1/4 h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-r border-gray-300 dark:border-gray-700`}
       >
-        <UserPanel/>
+        <UserPanel onItemClick={() => setMobileSidebar(false)}/>
       </div>
     </>
   );

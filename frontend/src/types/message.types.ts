@@ -8,6 +8,7 @@ export interface MessageItemProps {
   name: string;
   avatar: string;
   id: string;
+  onClick?: () => void;
 }
 
 export interface IMessage {
@@ -24,3 +25,7 @@ export interface IMessages {
   setMessages: (messages: IMessage[]) => void;
   addMessage: (message: IMessage) => void;
 }
+
+export type UserPanelProps = {
+  onItemClick?: () => void;
+};

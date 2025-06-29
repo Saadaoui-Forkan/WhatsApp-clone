@@ -8,8 +8,9 @@ import { FiFolder } from "react-icons/fi";
 import { useMessageStore } from "../../store/message.store";
 import { getReceiverMessages } from "../../utils/helpers";
 import { IFriend } from "../../types/user.types";
+import { UserPanelProps } from "../../types/message.types";
 
-const UserPanel = () => {
+const UserPanel = ({ onItemClick }: UserPanelProps) => {
   const { user, friends } = useAuthStore();
   const { messages } = useMessageStore();
   const [showProfile, setShowProfile] = useState(false);
@@ -73,6 +74,7 @@ const UserPanel = () => {
                 id={friend.id}
                 name={friend.name}
                 avatar={friend?.profilePicture?.secureUrl || defaultAvatar}
+                onClick={onItemClick}
               />
             ))
         ) : (

@@ -29,7 +29,7 @@ const ChatHeader = () => {
                   <span className="animate-bounce delay-[225ms]">.</span>
                 </span>
               ) : (
-                contact.name
+                contact.bio
               )}
             </p>
           </div>
