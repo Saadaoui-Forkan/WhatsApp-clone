@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
     "server": "tsx watch index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "generate": "prisma generate"
   },
   "author": "Mahmoud Saadaoui",
   "license": "ISC",
