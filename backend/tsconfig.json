@@ -18,6 +18,6 @@
     "incremental": true,
     "skipLibCheck": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["index.ts", "**/*.ts"],
   "exclude": ["node_modules"]
 }
