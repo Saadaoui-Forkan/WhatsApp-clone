@@ -39,6 +39,11 @@ app.use('/api/profile', profileRouter)
 app.use('/api/users/password', passwordRouter)
 app.use('/api/messages', isAuth, messageRouter)
 
+type MessagePayload = {
+  receiverId: string;
+  content: string;
+};
+
 io.on("connection", (socket: Socket) => {
   console.log("connected user: ", socket.data.userInfo)
   const userId = socket.data.userInfo.id;
@@ -47,11 +52,6 @@ io.on("connection", (socket: Socket) => {
   socket.on("disconnected", () => {
     console.log("disconnected user: ", socket.id)
   })
-
-  type MessagePayload = {
-    receiverId: string;
-    content: string;
-  };
 
   socket.on("send_message", async({receiverId, content}: MessagePayload) => {
     const senderId = userId

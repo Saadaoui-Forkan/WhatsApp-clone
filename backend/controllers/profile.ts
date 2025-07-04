@@ -4,9 +4,8 @@ import { PrismaClient } from "@prisma/client";
 import { ProfileInfo } from "../types/profile.types";
 import path from "path";
 import fs from "fs/promises";
-import { cloudinaryRemoveImage, cloudinaryUploadImage } from "middlewares/cloudinary";
+import { cloudinaryRemoveImage, cloudinaryUploadImage } from "../middlewares/cloudinary";
 
-const __dirname = path.resolve();
 const prisma = new PrismaClient();
 
 /**

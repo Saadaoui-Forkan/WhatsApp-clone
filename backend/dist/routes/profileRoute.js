@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_1 = require("../middlewares/auth");
+const profile_1 = require("../controllers/profile");
+const upload_1 = require("../middlewares/upload");
+const profileRouter = (0, express_1.Router)();
+profileRouter.put('/:id', auth_1.isAuth, profile_1.updateProfile);
+profileRouter.put('/:id/profile-photo', auth_1.isAuth, upload_1.photoUpload.single('image'), profile_1.updateProfilePhoto);
+exports.default = profileRouter;
