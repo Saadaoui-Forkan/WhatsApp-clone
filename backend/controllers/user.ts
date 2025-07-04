@@ -7,8 +7,8 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
 import crypto from "crypto"
 import { sendEmail } from "../utils/nodemailer";
-import { getVerificationEmailTemplate } from "utils/htmlTemplate";
-import { io } from "index";
+import { getVerificationEmailTemplate } from "../utils/htmlTemplate";
+import { io } from "../index";
 
 const prisma = new PrismaClient();
 
