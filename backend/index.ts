@@ -1,11 +1,12 @@
 import express from "express";
+import { Request, Response } from "express";
 import 'dotenv/config';
 import cors from "cors";
 import userRouter from "./routes/userRoute";
 import profileRouter from "./routes/profileRoute";
 import passwordRouter from "./routes/passwordRoute";
 import http from "http";
-import { Server } from "socket.io"
+import { Server, Socket } from "socket.io"
 import { isAuth, isSocketAuth } from "middlewares/auth";
 import messageRouter from "routes/messageRoute";
 import { PrismaClient } from "@prisma/client";
@@ -30,7 +31,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Hello From Server");
 });
 
@@ -39,7 +40,7 @@ app.use('/api/profile', profileRouter)
 app.use('/api/users/password', passwordRouter)
 app.use('/api/messages', isAuth, messageRouter)
 
-io.on("connection", (socket) => {
+io.on("connection", (socket: Socket) => {
   console.log("connected user: ", socket.data.userInfo)
   const userId = socket.data.userInfo.id;
   socket.join(userId);
@@ -48,7 +49,12 @@ io.on("connection", (socket) => {
     console.log("disconnected user: ", socket.id)
   })
 
-  socket.on("send_message", async({receiverId, content}) => {
+  type MessagePayload = {
+    receiverId: string;
+    content: string;
+  };
+
+  socket.on("send_message", async({receiverId, content}: MessagePayload) => {
     const senderId = userId
     const message = await prisma.message.create({
       data: {
@@ -61,15 +67,15 @@ io.on("connection", (socket) => {
     io.to([receiverId, senderId]).emit("receive_message", message)
   })
 
-  socket.on("typing", (receiverId) => {
+  socket.on("typing", (receiverId: string) => {
     socket.to(receiverId).emit("typing", userId)
   })
 
-  socket.on("stop_typing", (receiverId) => {
+  socket.on("stop_typing", (receiverId: string) => {
     socket.to(receiverId).emit("stop_typing", userId)
   })
 
-  socket.on("seen", async(receiverId) => {
+  socket.on("seen", async(receiverId: string) => {
     const senderId = userId
 
     await prisma.message.updateMany({
