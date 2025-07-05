@@ -1,5 +1,5 @@
 import { IMessage } from "../types/message.types";
-import { IFriend, IUser } from "../types/user.types";
+import { IFriend } from "../types/user.types";
 import moment from "moment";
 
 export const getContactById = (friends: IFriend[], receiverId: string): IFriend | undefined => {
