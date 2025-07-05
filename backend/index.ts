@@ -15,9 +15,16 @@ const prisma = new PrismaClient();
 const app = express();
 const server = http.createServer(app)
 const PORT = process.env.PORT || 5001;
+
+const allowedOrigins = [
+  process.env.CLIENT_DEVELOPMENT_DOMAIN,
+  process.env.CLIENT_PRODUCTION_DOMAIN,
+].filter(Boolean) as string[]
+
+// Socket.IO CORS
 export const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_DOMAIN_URL,
+    origin: allowedOrigins,
     credentials: true
   }
 })
@@ -25,29 +32,12 @@ export const io = new Server(server, {
 io.use(isSocketAuth)
 
 app.use(express.json());
-// app.use(cors({
-//   origin: process.env.CLIENT_DOMAIN_URL,
-//   credentials: true,
-// }));
-const allowedOrigins = [
-  process.env.CLIENT_DEVELOPMENT_DOMAIN, 
-  process.env.CLIENT_PRODUCTION_DOMAIN,  
-];
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        // Allow request
-        callback(null, true);
-      } else {
-        // Block request from unknown origin
-        console.warn(`⚠️ CORS blocked request from origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // Allow sending cookies with requests (important for auth)
-  })
-);
+
+// Express CORS
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello From Server");
