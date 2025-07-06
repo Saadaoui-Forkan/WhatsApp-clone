@@ -3,7 +3,7 @@ import { IoMdClose, IoMdMenu } from "react-icons/io";
 import UserPanel from "./UserPanel";
 
 export default function Sidebar() {
-  const [mobileSidebar, setMobileSidebar] = useState(false);
+  const [mobileSidebar, setMobileSidebar] = useState(true);
 
   const toggleMobileSidebar = () => {
     setMobileSidebar((prev) => !prev);
@@ -16,7 +16,7 @@ export default function Sidebar() {
           onClick={toggleMobileSidebar}
           className="p-2 rounded-md bg-gray-200 dark:bg-gray-700"
         >
-          {mobileSidebar ? (
+          {!mobileSidebar ? (
             <IoMdClose size={18} color="white" />
           ) : (
             <IoMdMenu size={18} color="white" />
