@@ -44,7 +44,7 @@ const UserPanel = ({ onItemClick }: UserPanelProps) => {
   if (showProfile) return <Profile onclose={() => setShowProfile(false)} />;
 
   return (
-    <div className="w-full h-full flex flex-col p-4 overflow-y-auto">
+    <div className="w-full h-full flex flex-col p-4 pb-10 overflow-y-auto">
       <div
         className="flex items-center mb-4 p-2 cursor-pointer transition-transform duration-300 hover:scale-105"
         onClick={() => setShowProfile(true)}

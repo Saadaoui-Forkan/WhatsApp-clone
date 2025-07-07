@@ -88,8 +88,8 @@ io.on("connection", (socket: Socket) => {
 
     await prisma.message.updateMany({
       where: {
-        senderId,
-        receiverId,
+        senderId: receiverId,
+        receiverId: senderId,
         seen: false,
       },
       data: {
