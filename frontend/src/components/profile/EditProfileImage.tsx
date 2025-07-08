@@ -24,7 +24,7 @@ const EditProfileImage = () => {
           ...user,
           photoProfile: data?.updatedProfilePhoto.profilePicture.secureUrl,
         });
-        toast.success(data.message)
+        toast.success(data?.message)
       },
       onError: (err) => {
         console.log(err)
