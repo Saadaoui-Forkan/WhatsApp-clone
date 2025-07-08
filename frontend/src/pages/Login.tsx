@@ -46,7 +46,7 @@ const LoginPage = () => {
         } else if (error instanceof Error) {
           toast.error(error.message);
         } else {
-          toast.error("An unexpected error occurred.");
+          toast.error("An unexpected error occurred. Login");
         }
         actions.resetForm()
       }
