@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { handleError } from "../utils/common";
+import { handleError } from "../utils/common.js";
 import jwt from "jsonwebtoken";
-import { JwtPayload } from "../types/user.types";
+import { JwtPayload } from "../types/user.types.js";
 import { ExtendedError, Socket } from "socket.io";
 
 export const isAuth = (

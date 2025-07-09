@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { isAuth } from '../middlewares/auth';
-import { updateProfile, updateProfilePhoto } from '../controllers/profile';
-import { photoUpload } from '../middlewares/upload';
+import { isAuth } from '../middlewares/auth.js';
+import { updateProfile, updateProfilePhoto } from '../controllers/profile.js';
+import { photoUpload } from '../middlewares/upload.js';
 
 const profileRouter = Router()
 

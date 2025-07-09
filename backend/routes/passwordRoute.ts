@@ -2,7 +2,7 @@ import {
   getResetPasswordLink,
   resetPassword,
   sendResetPasswordLink,
-} from "../controllers/password";
+} from "../controllers/password.js";
 import { Router } from "express";
 
 const passwordRouter = Router();

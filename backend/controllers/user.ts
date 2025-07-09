@@ -1,14 +1,14 @@
 import { Request, RequestHandler, Response } from "express";
-import { loginSchema, registerSchema } from "../utils/validationSchema";
-import { LoginUser, RegisterUser } from "../types/user.types";
-import { handleError, validateData } from "../utils/common";
+import { loginSchema, registerSchema } from "../utils/validationSchema.js";
+import { LoginUser, RegisterUser } from "../types/user.types.js";
+import { handleError, validateData } from "../utils/common.js";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { generateToken } from "../utils/generateToken";
+import { generateToken } from "../utils/generateToken.js";
 import crypto from "crypto"
-import { sendEmail } from "../utils/nodemailer";
-import { getVerificationEmailTemplate } from "../utils/htmlTemplate";
-import { io } from "../index";
+import { sendEmail } from "../utils/nodemailer.js";
+import { getVerificationEmailTemplate } from "../utils/htmlTemplate.js";
+import { io } from "../index.js";
 
 const prisma = new PrismaClient();
 

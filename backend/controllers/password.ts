@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { Email, Password } from "../types/password.types";
-import { handleError, validateData } from "../utils/common";
-import { emailSchema, passwordSchema } from "../utils/validationSchema";
+import { Email, Password } from "../types/password.types.js";
+import { handleError, validateData } from "../utils/common.js";
+import { emailSchema, passwordSchema } from "../utils/validationSchema.js";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import { getResetPasswordTemplate } from "../utils/htmlTemplate";
-import { sendEmail } from "../utils/nodemailer";
+import { getResetPasswordTemplate } from "../utils/htmlTemplate.js";
+import { sendEmail } from "../utils/nodemailer.js";
 
 const prisma = new PrismaClient();
 

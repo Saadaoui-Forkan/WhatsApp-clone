@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
 import 'dotenv/config';
 import cors from "cors";
-import userRouter from "./routes/userRoute";
-import profileRouter from "./routes/profileRoute";
-import passwordRouter from "./routes/passwordRoute";
+import userRouter from "./routes/userRoute.js";
+import profileRouter from "./routes/profileRoute.js";
+import passwordRouter from "./routes/passwordRoute.js";
 import http from "http";
 import { Server, Socket } from "socket.io"
-import { isAuth, isSocketAuth } from "./middlewares/auth";
-import messageRouter from "./routes/messageRoute";
+import { isAuth, isSocketAuth } from "./middlewares/auth.js";
+import messageRouter from "./routes/messageRoute.js";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

@@ -1,6 +1,6 @@
-import { getMessages } from '../controllers/message';
+import { getMessages } from '../controllers/message.js';
 import { Router } from 'express'
-import { isAuth } from '../middlewares/auth';
+import { isAuth } from '../middlewares/auth.js';
 
 const messageRouter = Router()
 

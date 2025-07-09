@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { handleError } from "../utils/common";
+import { handleError } from "../utils/common.js";
 import { PrismaClient } from "@prisma/client";
-import { ProfileInfo } from "../types/profile.types";
+import { ProfileInfo } from "../types/profile.types.js";
 import path from "path";
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
-import { cloudinaryRemoveImage, cloudinaryUploadImage } from "../middlewares/cloudinary";
+import { cloudinaryRemoveImage, cloudinaryUploadImage } from "../middlewares/cloudinary.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
