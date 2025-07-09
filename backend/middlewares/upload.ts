@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 
 // Photo Storage
 const photoStorage = multer.diskStorage({
-  destination: "images",
+  destination: path.resolve("images"),
   filename: function (req, file, cb) {
     if (file) {
       cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
