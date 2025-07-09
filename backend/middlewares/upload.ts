@@ -4,11 +4,12 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const imagePath = path.resolve(__dirname, "../images");
 
 // Photo Storage
 const photoStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../images"));
+    cb(null, imagePath);
   },
   filename: function (req, file, cb) {
     if (file) {
