@@ -78,7 +78,10 @@ export const updateProfilePhoto = async (
       return
     } 
     // Build the local path to the uploaded image
-    const imagePath = path.join(__dirname, `../images/${req.file.filename}`)
+    const imagePath = path.join(
+      process.env.NODE_ENV === "production" ? "/tmp" : path.join(__dirname, "../images"),
+      req.file.filename
+    );
     // Upload the image to Cloudinary
     const uploadResult = await cloudinaryUploadImage(imagePath)
     // Remove the local image file after upload
