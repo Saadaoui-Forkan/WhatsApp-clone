@@ -2,15 +2,12 @@ import path from "path";
 import multer from "multer";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const imagePath = path.resolve(__dirname, "../images");
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 // Photo Storage
 const photoStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, imagePath);
-  },
+  destination: "images",
   filename: function (req, file, cb) {
     if (file) {
       cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
