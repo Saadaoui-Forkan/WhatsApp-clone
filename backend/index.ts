@@ -9,7 +9,11 @@ import { Server, Socket } from "socket.io"
 import { isAuth, isSocketAuth } from "./middlewares/auth.js";
 import messageRouter from "./routes/messageRoute.js";
 import { PrismaClient } from "@prisma/client";
+import { fileURLToPath } from "url";
 import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const prisma = new PrismaClient();
 
