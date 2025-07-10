@@ -6,4 +6,4 @@ function sanitizeDomain(domain?: string) {
 const prodDomain = sanitizeDomain(process.env.CLIENT_PRODUCTION_DOMAIN);
 const devDomain = sanitizeDomain(process.env.CLIENT_DEVELOPMENT_DOMAIN);
 
-export const CLIENT_DOMAIN = `${process.env.NODE_ENV === "production" ? prodDomain : devDomain}/api`;
+export const CLIENT_DOMAIN = `${process.env.NODE_ENV === "production" ? prodDomain : devDomain}`;
