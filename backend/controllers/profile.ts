@@ -2,13 +2,7 @@ import { Request, Response } from "express";
 import { handleError } from "../utils/common.js";
 import { PrismaClient } from "@prisma/client";
 import { ProfileInfo } from "../types/profile.types.js";
-import path from "path";
-import fs from "fs/promises";
-import { fileURLToPath } from "url";
-import { cloudinaryRemoveImage, cloudinaryUploadImage } from "../middlewares/cloudinary.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import cloudinary from "../middlewares/cloudinary.js";
 
 const prisma = new PrismaClient();
 
@@ -73,16 +67,17 @@ export const updateProfilePhoto = async (
       return
     }
     // Check if an image file was uploaded
-    if (!req.file) {
+    const image = req.file
+    if (!image) {
       res.status(400).json({ message: "No image file uploaded." })
       return
     } 
-    // Build the local path to the uploaded image
-    const imagePath = path.join(__dirname, `../images/${req.file.filename}`)
     // Upload the image to Cloudinary
-    const uploadResult = await cloudinaryUploadImage(imagePath)
-    // Remove the local image file after upload
-    await fs.unlink(imagePath);
+    const base64 = image.buffer.toString("base64");
+    const mimeType = image.mimetype;
+    const uploadResponse = await cloudinary.uploader.upload(
+      `data:${mimeType};base64,${base64}`,
+    );
     // Retrieve the user from the database
     const profile = await prisma.user.findUnique({ where: { id: req.user.id } }) 
     if (!profile) {
@@ -92,15 +87,15 @@ export const updateProfilePhoto = async (
     // If the user already has a profile picture, remove it from Cloudinary
     const profilePicture = profile.profilePicture as { publicId: string; secureUrl: string };
     if (profilePicture?.publicId) {
-      await cloudinaryRemoveImage(profilePicture.publicId);
+      await cloudinary.uploader.destroy(profilePicture.publicId);
     }
     // Update the user's profile with the new profile picture
     const updatedProfilePhoto = await prisma.user.update({
       where: { id: req.user.id },
       data: {
         profilePicture: {
-          publicId: uploadResult.public_id,
-          secureUrl: uploadResult.secure_url
+          publicId: uploadResponse.public_id,
+          secureUrl: uploadResponse.secure_url
         }
       },
       select: {
