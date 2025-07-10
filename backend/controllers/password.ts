@@ -45,7 +45,7 @@ export const sendResetPasswordLink  = async (req: Request, res: Response): Promi
       });
     }
     // 4. Construct the reset password link
-    const link = `${process.env.CLIENT_DOMAIN_URL}/reset-password/${user.id}/${verificationToken.token}`;
+    const link = `${process.env.CLIENT_PRODUCTION_DOMAIN}/reset-password/${user.id}/${verificationToken.token}`;
     // 5. Generate HTML email content and send the email
     const htmlTemplate = getResetPasswordTemplate(link);
     await sendEmail(user.email, "Reset Password", htmlTemplate);

@@ -57,7 +57,7 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
       }
     })
     // Create the verification link
-    const link = `${process.env.CLIENT_DOMAIN_URL}/users/${newUser.id}/verify/${vtoken.token}`
+    const link = `${process.env.CLIENT_PRODUCTION_DOMAIN}/users/${newUser.id}/verify/${vtoken.token}`
     // Prepare the email content and send it
     const htmlTemplate = getVerificationEmailTemplate(link);
     await sendEmail(newUser.email, "Verify Your Email Address", htmlTemplate);
