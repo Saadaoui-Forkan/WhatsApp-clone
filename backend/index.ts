@@ -39,7 +39,7 @@ io.use(isSocketAuth)
 app.use(express.json());
 
 // Express CORS
-app.use(cors({
+app.use("*", cors({
   origin: allowedOrigins,
   credentials: true
 }));

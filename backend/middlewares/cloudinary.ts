@@ -7,25 +7,3 @@ cloudinary.config({
 })
 
 export default cloudinary;
-
-// export const cloudinaryUploadImage = async(fileToUpload: string) => {
-//   try {
-//       const data = await cloudinary.uploader.upload(fileToUpload, {
-//           resource_type: 'auto',   
-//       })
-//       return data
-//   } catch (error) {
-//       console.log(error)
-//       throw new Error('Internal Server Error (cloudinary)')
-//   }
-// }
-
-// export const cloudinaryRemoveImage = async(imagePublicId: string ) => {
-//   try {
-//       const result = await cloudinary.uploader.destroy(imagePublicId)
-//       return result
-//   } catch (error) {
-//       console.log(error)
-//       throw new Error('Internal Server Error (cloudinary)')
-//   }
-// }
