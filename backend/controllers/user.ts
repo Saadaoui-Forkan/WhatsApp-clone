@@ -9,7 +9,7 @@ import crypto from "crypto"
 import { sendEmail } from "../utils/nodemailer.js";
 import { getVerificationEmailTemplate } from "../utils/htmlTemplate.js";
 import { io } from "../index.js";
-import { CLIENT_DOMAIN } from "utils/constantes.js";
+import { CLIENT_DOMAIN } from "../utils/constantes.js";
 
 const prisma = new PrismaClient();
 

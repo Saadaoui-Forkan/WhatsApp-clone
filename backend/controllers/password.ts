@@ -7,7 +7,7 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { getResetPasswordTemplate } from "../utils/htmlTemplate.js";
 import { sendEmail } from "../utils/nodemailer.js";
-import { CLIENT_DOMAIN } from "utils/constantes.js";
+import { CLIENT_DOMAIN } from "../utils/constantes.js";
 
 const prisma = new PrismaClient();
 
