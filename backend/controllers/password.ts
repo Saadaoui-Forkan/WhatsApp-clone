@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { Email, Password } from "../types/password.types.js";
-import { handleError, validateData } from "../utils/common.js";
-import { emailSchema, passwordSchema } from "../utils/validationSchema.js";
+import { handleError } from "../utils/common.js";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { getResetPasswordTemplate } from "../utils/htmlTemplate.js";
 import { sendEmail } from "../utils/nodemailer.js";
 import { CLIENT_DOMAIN } from "../utils/constantes.js";
+import { hashToken } from "../utils/hashToken.js";
 
 /**
  *  @method  POST
@@ -19,8 +19,6 @@ export const sendResetPasswordLink  = async (req: Request, res: Response): Promi
   try {
     // 1. Validate email format from request body
     const { email } = req.body as Email;
-    const validationPassed = validateData(emailSchema, req, res);
-    if (!validationPassed) return;
     // 2. Check if the user exists in the database
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
@@ -31,7 +29,6 @@ export const sendResetPasswordLink  = async (req: Request, res: Response): Promi
     }
     // 3. Create a new password reset token
     const rawToken = crypto.randomBytes(32).toString("hex");
-    const { hashToken } = await import("../utils/hashToken.js");
     const tokenHash = hashToken(rawToken);
     await prisma.verificationToken.create({
       data: {
@@ -73,7 +70,6 @@ export const getResetPasswordLink = async (req: Request, res: Response): Promise
       return;
     }
     // Validate the provided verification token
-    const { hashToken } = await import("../utils/hashToken.js");
     const tokenHash = hashToken(token);
     const verificationToken = await prisma.verificationToken.findFirst({
       where: {
@@ -104,8 +100,6 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
   try {
     // Validate password format from request body
     const { password } = req.body as Password;
-    const validationPassed = validateData(passwordSchema, req, res);
-    if (!validationPassed) return;
     // Check if the user exists in the database
     const user = await prisma.user.findUnique({ where: { id: req.params.userId } });
     if (!user) {
@@ -115,7 +109,6 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
       return;
     }
     // Check if the token is valid
-    const { hashToken } = await import("../utils/hashToken.js");
     const tokenHash = hashToken(req.params.token);
     const verificationToken = await prisma.verificationToken.findFirst({
       where: {

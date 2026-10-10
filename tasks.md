@@ -54,13 +54,13 @@ Suivi de l'avancement du projet. ✅ = terminé, ⬜ = à faire.
 
 ---
 
-## Phase 2 — Robustesse des entrées ⬜
+## Phase 2 — Robustesse des entrées ✅
 
-- [ ] Appliquer le middleware `validate` (zod) sur les routes existantes
-- [ ] Schémas manquants : profil (`name`, `bio`), params (`userId`, `token`)
-- [ ] Socket.IO : `try/catch` sur tous les handlers async (anti-crash)
-- [ ] Socket.IO : validation `content` (≤ 4000 car.) + `receiverId` valide
-- [ ] Convertir les erreurs multer en `AppError`
+- [x] Appliquer le middleware `validate` (zod) sur les routes existantes
+- [x] Schémas manquants : profil (`name`, `bio`), params (`userId`, `token`)
+- [x] Socket.IO : `try/catch` sur tous les handlers async (anti-crash)
+- [x] Socket.IO : validation `content` (≤ 4000 car.) + `receiverId` valide
+- [x] Convertir les erreurs multer en `AppError`
 
 ---
 
@@ -133,8 +133,8 @@ Suivi de l'avancement du projet. ✅ = terminé, ⬜ = à faire.
 | Phase | Statut |
 |---|---|
 | 0 — Fondations | ✅ Terminé |
-| 1 — Sécurité | ✅ Terminé (2 mineurs) |
-| 2 — Robustesse entrées | ⬜ À faire |
+| 1 — Sécurité | ✅ Terminé |
+| 2 — Robustesse entrées | ✅ Terminé |
 | 3 — Messages curseur | ⬜ À faire |
 | 4 — Upload image | ⬜ À faire |
 | 5 — UI couleurs | ⬜ À faire |

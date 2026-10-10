@@ -15,6 +15,7 @@ import { isAuth, isSocketAuth } from "./middlewares/auth.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 import helmet from "helmet";
 import { globalLimiter } from "./routes/rateLimiters.js";
+import { sendMessageSchema } from "./utils/validationSchema.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,11 +66,6 @@ app.use("/api/profile", profileRouter);
 app.use("/api/users/password", passwordRouter);
 app.use("/api/messages", isAuth, messageRouter);
 
-type MessagePayload = {
-  receiverId: string;
-  content: string;
-};
-
 io.on("connection", (socket: Socket) => {
   console.log("connected user: ", socket.data.userInfo);
   const userId = socket.data.userInfo.id;
@@ -79,42 +75,67 @@ io.on("connection", (socket: Socket) => {
     console.log("disconnected user: ", socket.id);
   });
 
-  socket.on("send_message", async ({ receiverId, content }: MessagePayload) => {
-    const senderId = userId;
-    const message = await prisma.message.create({
-      data: {
-        receiverId,
-        senderId,
-        content,
-      },
-    });
+  socket.on("send_message", async (payload: unknown) => {
+    try {
+      const validation = sendMessageSchema.safeParse(payload);
+      if (!validation.success) {
+        socket.emit("error", { message: validation.error.issues.map((e) => e.message).join(", ") });
+        return;
+      }
 
-    io.to([receiverId, senderId]).emit("receive_message", message);
+      const { receiverId, content, attachment } = validation.data;
+      const senderId = userId;
+
+      const message = await prisma.message.create({
+        data: {
+          receiverId,
+          senderId,
+          content: content ?? "",
+          ...(attachment && { attachment }),
+        },
+      });
+
+      io.to([receiverId, senderId]).emit("receive_message", message);
+    } catch (err) {
+      if (!isProduction) {
+        console.error("[socket:send_message]", err);
+      }
+      socket.emit("error", { message: "Failed to send message" });
+    }
   });
 
   socket.on("typing", (receiverId: string) => {
+    if (typeof receiverId !== "string" || !receiverId) return;
     socket.to(receiverId).emit("typing", userId);
   });
 
   socket.on("stop_typing", (receiverId: string) => {
+    if (typeof receiverId !== "string" || !receiverId) return;
     socket.to(receiverId).emit("stop_typing", userId);
   });
 
   socket.on("seen", async (receiverId: string) => {
-    const senderId = userId;
+    if (typeof receiverId !== "string" || !receiverId) return;
+    try {
+      const senderId = userId;
 
-    await prisma.message.updateMany({
-      where: {
-        senderId: receiverId,
-        receiverId: senderId,
-        seen: false,
-      },
-      data: {
-        seen: true,
-      },
-    });
+      await prisma.message.updateMany({
+        where: {
+          senderId: receiverId,
+          receiverId: senderId,
+          seen: false,
+        },
+        data: {
+          seen: true,
+        },
+      });
 
-    io.emit("seen", senderId);
+      io.to(receiverId).emit("seen", { senderId });
+    } catch (err) {
+      if (!isProduction) {
+        console.error("[socket:seen]", err);
+      }
+    }
   });
 });
 

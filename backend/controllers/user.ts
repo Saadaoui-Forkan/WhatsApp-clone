@@ -1,7 +1,6 @@
 import { Request, RequestHandler, Response } from "express";
-import { loginSchema, registerSchema } from "../utils/validationSchema.js";
 import { LoginUser, RegisterUser } from "../types/user.types.js";
-import { handleError, validateData } from "../utils/common.js";
+import { handleError } from "../utils/common.js";
 import { prisma } from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
@@ -10,6 +9,7 @@ import { sendEmail } from "../utils/nodemailer.js";
 import { getVerificationEmailTemplate } from "../utils/htmlTemplate.js";
 import { io } from "../index.js";
 import { CLIENT_DOMAIN } from "../utils/constantes.js";
+import { hashToken } from "../utils/hashToken.js";
 
 /**
  *  @method  POST
@@ -23,9 +23,6 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
 ) => {
   try {
     const { name, email, password } = req.body as RegisterUser;
-    // Validation with zod
-    const validationPassed = validateData(registerSchema, req, res);
-    if (!validationPassed) return;
     // Check if user exist
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) {
@@ -49,7 +46,6 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
     });
     // Generate an email verification token
     const rawToken = crypto.randomBytes(32).toString("hex");
-    const { hashToken } = await import("../utils/hashToken.js");
     const tokenHash = hashToken(rawToken);
     const vtoken = await prisma.verificationToken.create({
       data: {
@@ -86,9 +82,6 @@ export const login: RequestHandler<any, any, LoginUser> = async (
 ) => {
   try {
     const { email, password } = req.body as LoginUser;
-    // Validation with zod
-    const validationPassed = validateData(loginSchema, req, res);
-    if (!validationPassed) return;
     const user = await prisma.user.findUnique({ where: { email } });
     if (user && (await bcrypt.compare(password, user.password))) {
       // Check if email is verified
@@ -201,7 +194,6 @@ export const verifyAccount = async (req: Request, res: Response): Promise<void> 
       return
     }
     // Check if token exists for this user
-    const { hashToken } = await import("../utils/hashToken.js");
     const tokenHash = hashToken(token);
     const verificationToken = await prisma.verificationToken.findFirst({
       where: {

@@ -5,11 +5,13 @@ import {
 } from "../controllers/password.js";
 import { Router } from "express";
 import { resetLimiter } from "./rateLimiters.js";
+import { validate } from "../utils/validation.js";
+import { emailSchema, passwordSchema, resetParamsSchema } from "../utils/validationSchema.js";
 
 const passwordRouter = Router();
 
-passwordRouter.post("/reset-password", resetLimiter, sendResetPasswordLink);
-passwordRouter.get("/reset-password/:userId/:token", getResetPasswordLink);
-passwordRouter.post("/reset-password/:userId/:token", resetLimiter, resetPassword);
+passwordRouter.post("/reset-password", resetLimiter, validate(emailSchema), sendResetPasswordLink);
+passwordRouter.get("/reset-password/:userId/:token", validate(resetParamsSchema, "params"), getResetPasswordLink);
+passwordRouter.post("/reset-password/:userId/:token", resetLimiter, validate(resetParamsSchema, "params"), validate(passwordSchema), resetPassword);
 
 export default passwordRouter;
