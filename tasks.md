@@ -64,15 +64,15 @@ Suivi de l'avancement du projet. ✅ = terminé, ⬜ = à faire.
 
 ---
 
-## Phase 3 — Messages par curseur + conversations ⬜
+## Phase 3 — Messages par curseur + conversations ✅
 
 - [x] Index Prisma : `@@index([senderId])`, `@@index([receiverId])`, `@@index([createdAt])`
-- [ ] `GET /api/messages/:userId?cursor=&limit=30` (curseur `createdAt`)
-- [ ] Supprimer `GET /api/messages` « tout charger »
-- [ ] `GET /api/conversations` — dernier message + non-lus par contact (côté serveur)
-- [ ] Front : `useInfiniteQuery` + scroll vers le haut
-- [ ] Front : store messages **indexé par conversation**
-- [ ] Fix `seen` : cibler le bon utilisateur + listener front + coches
+- [x] `GET /api/messages/:userId?cursor=&limit=30` (curseur `createdAt`)
+- [x] Supprimer `GET /api/messages` « tout charger »
+- [x] `GET /api/conversations` — dernier message + non-lus par contact (côté serveur)
+- [x] Front : `useInfiniteQuery` + scroll vers le haut
+- [x] Front : store messages **indexé par conversation**
+- [x] Fix `seen` : cibler le bon utilisateur + listener front + coches
 
 ---
 

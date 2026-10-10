@@ -6,6 +6,7 @@
     // "module": "commonjs",
     "module": "esnext",
     "moduleResolution": "node",
+    "ignoreDeprecations": "5.0",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,

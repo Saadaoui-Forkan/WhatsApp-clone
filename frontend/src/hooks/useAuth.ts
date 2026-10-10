@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchFriendsApi, loginApi, logoutApi, registerApi, verifyEmailApi } from "../api/user.api";
+import { getConversationsApi } from "../api/message.api";
 
 export const useLogin = () => {
   return useMutation({
@@ -30,5 +31,13 @@ export const useFetchFriends = (token: string) => {
     queryKey: ['friends', token],
     queryFn: () => fetchFriendsApi(token!),
     enabled: !!token, 
+  })
+}
+
+export const useFetchConversations = (token: string) => {
+  return useQuery({
+    queryKey: ['conversations', token],
+    queryFn: () => getConversationsApi(token!),
+    enabled: !!token,
   })
 }

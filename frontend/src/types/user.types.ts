@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { IConversation } from "./message.types";
 
 export interface AuthHeaderProps {
   title: string;
@@ -50,6 +51,8 @@ export interface IAuth {
   friends: IFriend[]
   setFriends: (friends: IFriend[]) => void
   addFriend: (friend: IFriend) => void
+  conversations: IConversation[]
+  setConversations: (conversations: IConversation[]) => void
   typing: boolean;
   setTyping: (typing: boolean) => void;
 }

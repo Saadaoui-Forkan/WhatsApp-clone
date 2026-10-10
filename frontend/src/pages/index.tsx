@@ -1,32 +1,27 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import io from "socket.io-client";
 import { useSocketStore } from "../store/socket.store";
 import { useAuthStore } from "../store/auth.store";
-import { useFetchFriends } from "../hooks/useAuth";
+import { useFetchConversations } from "../hooks/useAuth";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
-import { useFetchMessages } from "../hooks/useMessage";
 import { useMessageStore } from "../store/message.store";
 
 const Sidebar = lazy(() => import("../components/sidebar"));
 
 const Home = () => {
+  const { pathname } = useLocation();
+  const receiverId = pathname.slice(1);
   const { setSocket } = useSocketStore();
-  const { token, user, setFriends, addFriend, setTyping } = useAuthStore();
-  const { setMessages, addMessage } = useMessageStore()
+  const { token, user, setFriends, setConversations, addFriend } = useAuthStore();
+  const { addMessage, markAllAsSeen } = useMessageStore();
   const {
-    data: friendsData,
-    isLoading: friendsLoading,
-    error: friendsError,
-  } = useFetchFriends(token);
-  
-  const {
-    data: messagesData,
-    isLoading: messagesLoading,
-    error: messagesError,
-  } = useFetchMessages(token);
-  
+    data: conversationsData,
+    isLoading: conversationsLoading,
+    error: conversationsError,
+  } = useFetchConversations(token);
+
   useEffect(() => {
     if (!token) return
     const socket = io(process.env.REACT_APP_BACKEND_URL, {
@@ -47,11 +42,16 @@ const Home = () => {
     });
 
     socket.on("receive_message", (message) => {
-      addMessage(message);
+      if (user) {
+        addMessage(user.id, message);
+      }
     });
 
-    socket.on("typing", () => setTyping(true))
-    socket.on("stop_typing", () => setTyping(false))
+    socket.on("seen", ({ senderId }) => {
+      if (user && senderId !== user.id) {
+        markAllAsSeen(senderId);
+      }
+    });
 
     socket.on("disconnect", () => {
       console.log("disconnected from the server");
@@ -60,29 +60,24 @@ const Home = () => {
     return () => {
       socket.disconnect();
     };
-  }, [token, addFriend, addMessage, setSocket, setTyping, user?.id]);
+  }, [token, addFriend, addMessage, setSocket, markAllAsSeen, user?.id]);
 
   useEffect(() => {
-    if (friendsData?.friends) {
-      setFriends(friendsData.friends);
+    if (conversationsData?.conversations) {
+      setConversations(conversationsData.conversations);
+      setFriends(conversationsData.conversations.map((c: any) => c.user));
     }
-  }, [friendsData, setFriends]);
+  }, [conversationsData, setConversations, setFriends]);
 
-  useEffect(() => {
-    if (messagesData?.messages) {
-      setMessages(messagesData.messages);
-    }
-  }, [messagesData, setMessages]);
-
-  if (friendsError || messagesError) {
-    console.error(friendsError || messagesError);
+  if (conversationsError) {
+    console.error(conversationsError);
     toast.error(
-      (friendsError || messagesError)?.message || "An unexpected error occurred."
+      (conversationsError as any)?.message || "An unexpected error occurred."
     );
     return null;
   }
 
-  if (friendsLoading || messagesLoading) {
+  if (conversationsLoading) {
     return <Spinner />;
   }
   return (

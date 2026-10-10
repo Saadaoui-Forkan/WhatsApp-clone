@@ -5,14 +5,10 @@ import Profile from "../profile";
 import Search from "./Search";
 import MessageItem from "./MessageItem";
 import { FiFolder } from "react-icons/fi";
-import { useMessageStore } from "../../store/message.store";
-import { getReceiverMessages } from "../../utils/helpers";
-import { IFriend } from "../../types/user.types";
 import { UserPanelProps } from "../../types/message.types";
 
 const UserPanel = ({ onItemClick }: UserPanelProps) => {
-  const { user, friends } = useAuthStore();
-  const { messages } = useMessageStore();
+  const { user, conversations } = useAuthStore();
   const [showProfile, setShowProfile] = useState(false);
   const [search, setSearch] = useState("");
   const [showUnseenMessages, setShowUnseenMessages] = useState(false);
@@ -21,25 +17,18 @@ const UserPanel = ({ onItemClick }: UserPanelProps) => {
     setSearch(e.target.value);
   };
 
-  const searchedFriends = friends.filter((friend) =>
-    friend.name.toLowerCase().includes(search.toLowerCase().trim())
-  );
-
   const handleShowUnseenMessages = () => {
     setShowUnseenMessages((val) => !val);
   };
 
-  const unseenMessagesContacts = (contact: IFriend) => {
+  const searchedConversations = conversations.filter((conv) =>
+    conv.user.name.toLowerCase().includes(search.toLowerCase().trim())
+  );
+
+  const filteredConversations = searchedConversations.filter((conv) => {
     if (!showUnseenMessages) return true;
-
-    const contactMessages = getReceiverMessages(messages, contact.id);
-
-    const containUnseenMessages = contactMessages.some(
-      (message) => !message.seen
-    );
-
-    return containUnseenMessages;
-  };
+    return conv.unreadCount > 0;
+  });
 
   if (showProfile) return <Profile onclose={() => setShowProfile(false)} />;
 
@@ -65,22 +54,18 @@ const UserPanel = ({ onItemClick }: UserPanelProps) => {
         handleShowUnseenMessages={handleShowUnseenMessages}
       />
       <div className="space-y-2">
-        {searchedFriends.length > 0 ? (
-          searchedFriends
-            .filter(unseenMessagesContacts)
-            .map((friend) => (
-              <MessageItem
-                key={friend.id}
-                id={friend.id}
-                name={friend.name}
-                avatar={friend?.profilePicture?.secureUrl || defaultAvatar}
-                onClick={onItemClick}
-              />
-            ))
+        {filteredConversations.length > 0 ? (
+          filteredConversations.map((conv) => (
+            <MessageItem
+              key={conv.user.id}
+              conversation={conv}
+              onClick={onItemClick}
+            />
+          ))
         ) : (
           <div className="flex flex-col items-center justify-center mt-10 text-center text-gray-500">
             <FiFolder className="w-12 h-12 mb-3 text-gray-400" />
-            <p className="text-sm font-medium">No contacts found...</p>
+            <p className="text-sm font-medium">No conversations found...</p>
           </div>
         )}
       </div>
