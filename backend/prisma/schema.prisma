@@ -23,13 +23,14 @@ model User {
 
 model Message {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  content    String
+  content    String?
   seen       Boolean  @default(false)
   sender     User     @relation("SentMessages", fields: [senderId], references: [id])
   senderId   String   @db.ObjectId
   receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
   receiverId String   @db.ObjectId
   createdAt  DateTime @default(now())
+  attachment Json?
 
   @@index([senderId])
   @@index([receiverId])

@@ -42,3 +42,29 @@ export const getConversationsApi = async (token: string) => {
     return { conversations: [] };
   }
 };
+
+// Upload message attachment (image)
+export const uploadAttachmentApi = async (
+  file: File,
+  token: string
+) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/messages/attachment`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

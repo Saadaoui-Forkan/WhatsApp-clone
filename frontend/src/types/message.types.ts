@@ -3,11 +3,26 @@ export type ChatMessageProps = {
   content: string;
   createdAt: string;
   seen?: boolean;
+  attachment?: {
+    url: string;
+    publicId: string;
+    width?: number;
+    height?: number;
+    mime?: string;
+  };
 };
 
 export interface MessageItemProps {
   conversation: IConversation;
   onClick?: () => void;
+}
+
+export interface IAttachment {
+  url: string;
+  publicId: string;
+  width?: number;
+  height?: number;
+  mime?: string;
 }
 
 export interface IMessage {
@@ -17,6 +32,7 @@ export interface IMessage {
   senderId: string;        
   receiverId: string;     
   createdAt: string;       
+  attachment?: IAttachment;
 }
 
 export interface IConversation {

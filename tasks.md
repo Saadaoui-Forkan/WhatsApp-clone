@@ -76,13 +76,13 @@ Suivi de l'avancement du projet. ✅ = terminé, ⬜ = à faire.
 
 ---
 
-## Phase 4 — Upload d'image dans les messages ⬜
+## Phase 4 — Upload d'image dans les messages ✅
 
-- [ ] Schéma : `Message.content` → `String?`, ajouter `attachment Json?`
-- [ ] `POST /api/messages/attachment` (multipart → Cloudinary, `folder:"chat-attachments"`)
-- [ ] Socket `send_message` étendu `{ receiverId, content?, attachment? }` + validation
-- [ ] Front : bouton image dans `ChatFooter`, aperçu, upload
-- [ ] Front : rendu image dans `ChatMessage` + lightbox
+- [x] Schéma : `Message.content` → `String?`, ajouter `attachment Json?`
+- [x] `POST /api/messages/attachment` (multipart → Cloudinary, `folder:"chat-attachments"`)
+- [x] Socket `send_message` étendu `{ receiverId, content?, attachment? }` + validation
+- [x] Front : bouton image dans `ChatFooter`, aperçu, upload
+- [x] Front : rendu image dans `ChatMessage` + lightbox
 
 ---
 
@@ -135,8 +135,8 @@ Suivi de l'avancement du projet. ✅ = terminé, ⬜ = à faire.
 | 0 — Fondations | ✅ Terminé |
 | 1 — Sécurité | ✅ Terminé |
 | 2 — Robustesse entrées | ✅ Terminé |
-| 3 — Messages curseur | ⬜ À faire |
-| 4 — Upload image | ⬜ À faire |
+| 3 — Messages curseur | ✅ Terminé |
+| 4 — Upload image | ✅ Terminé |
 | 5 — UI couleurs | ⬜ À faire |
 | 6 — PWA installable | ⬜ À faire |
 | 7 — Auth cookie | ⬜ À faire |
