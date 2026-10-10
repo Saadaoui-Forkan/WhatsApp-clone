@@ -1,31 +1,33 @@
 import { ChangeEvent } from "react";
 import { FaSearch } from "react-icons/fa";
-import { IoFilter } from "react-icons/io5";
+import { IoFilter, IoFilterOutline } from "react-icons/io5";
 
 interface SearchProps {
   search: string;
   handleSearch: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleShowUnseenMessages: () => void
+  handleShowUnseenMessages: () => void;
+  showUnseenMessages: boolean;
 }
 
-const Search = ({ search, handleSearch, handleShowUnseenMessages }: SearchProps) => {
+const Search = ({ search, handleSearch, handleShowUnseenMessages, showUnseenMessages }: SearchProps) => {
   return (
     <div className="flex items-center gap-2 mb-4">
-      <div className="group focus-within:bg-gray-100 dark:focus-within:bg-gray-600 focus-within:shadow-sm flex items-center bg-white dark:bg-gray-700 rounded-md px-3 py-2 flex-grow transition-all duration-200">
+      <div className="group relative flex-1">
+        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
         <input
           type="text"
-          placeholder="Search your contacts..."
-          className="bg-transparent focus:outline-none w-full text-sm text-gray-900 dark:text-white"
+          placeholder="Search conversations..."
+          className="input-field pl-10"
           value={search}
           onChange={handleSearch}
         />
-        <FaSearch className="ml-2 text-gray-500 dark:text-gray-300 opacity-0 group-focus-within:opacity-100 transition-opacity duration-200" />
       </div>
-      <button 
-        className="p-2 rounded-md bg-gray-200 dark:bg-gray-600"
+      <button
+        className={`btn-icon ${showUnseenMessages ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' : ''}`}
         onClick={handleShowUnseenMessages}
+        aria-label={showUnseenMessages ? "Show all conversations" : "Filter unread"}
       >
-        <IoFilter size={16} className="text-gray-700 dark:text-gray-300" />
+        {showUnseenMessages ? <IoFilter size={20} /> : <IoFilterOutline size={20} />}
       </button>
     </div>
   );

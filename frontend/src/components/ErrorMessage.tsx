@@ -8,7 +8,7 @@ const ErrorMessage = <T extends Record<string, any>>({
   return (
     <div>
       {errors[name] && touched[name] && (
-        <p className="text-red-500 text-sm -mt-3">{errors[name] as string}</p>
+        <p className="form-error mt-1.5">{errors[name] as string}</p>
       )}
     </div>
   );

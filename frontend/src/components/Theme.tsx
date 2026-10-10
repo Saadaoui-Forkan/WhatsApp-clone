@@ -12,12 +12,13 @@ const Theme = () => {
     }
   }, [mode]);
   return (
-    <div className="fixed bottom-1 right-2 z-10">
+    <div className="fixed bottom-4 right-4 z-40 md:bottom-24 md:right-6">
       <button
         onClick={toggleMode}
-        className="text-xl text-emerald-600 dark:text-purple-300 hover:scale-110 transition-transform duration-300 ease-in-out animate-spin-slow"
+        className="btn-icon bg-white dark:bg-surface-cardDark shadow-soft-lg"
+        aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       >
-        {mode === "dark" ? <FaSun /> : <FaMoon />}
+        {mode === "dark" ? <FaSun size={20} /> : <FaMoon size={20} />}
       </button>
     </div>
   );

@@ -4,12 +4,19 @@ import { handleError } from "../utils/common.js";
 import { prisma } from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
+import { env, isProduction } from "../config/env.js";
 import crypto from "crypto"
 import { sendEmail } from "../utils/nodemailer.js";
 import { getVerificationEmailTemplate } from "../utils/htmlTemplate.js";
-import { io } from "../index.js";
 import { CLIENT_DOMAIN } from "../utils/constantes.js";
 import { hashToken } from "../utils/hashToken.js";
+
+// Socket.io instance will be injected to avoid circular dependency
+let socketIO: any = null;
+
+export const setSocketIO = (io: any) => {
+  socketIO = io;
+};
 
 /**
  *  @method  POST
@@ -89,11 +96,12 @@ export const login: RequestHandler<any, any, LoginUser> = async (
         res.status(400).json({ message: "Please verify your email address before logging in." });
         return;
       }
-      // Generate authentication token
-      const token = generateToken(res, {
+      // Generate authentication token (sets httpOnly cookie)
+      generateToken(res, {
         id: user.id,
         email: user.email,
       });
+      // Respond WITHOUT token in body
       res.status(200).json({
         message: "Welcome back",
         data: {
@@ -101,7 +109,6 @@ export const login: RequestHandler<any, any, LoginUser> = async (
           name: user.name,
           bio: user.bio,
           profilePicture: user.profilePicture,
-          token,
         },
       });
       return;
@@ -115,24 +122,42 @@ export const login: RequestHandler<any, any, LoginUser> = async (
     handleError(res, err as Error);
   }
 };
-
+ 
 /**
  *  @method  GET
  *  @route   /api/users/me
- *  @desc    Test protected route
+ *  @desc    Get current authenticated user
  *  @access  private
-*/
-export const test = async (
+ */
+export const getMe = async (
   req: Request,
   res: Response
-): Promise<void> => { 
+): Promise<void> => {
   try {
     if (!req.user) {
       res.status(401).json({ error: "Not Authenticated" });
-      return; 
+      return;
     }
-    
-    res.json({ user: req.user }); 
+
+    // Fetch fresh user data from database
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        bio: true,
+        profilePicture: true,
+        isAccountVerified: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    res.json({ user });
   } catch (err) {
     handleError(res, err as Error);
   }
@@ -144,16 +169,20 @@ export const test = async (
  * @method  POST
  * @access  private (only logged in users)
 */
+
 export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.user) {
       res.status(401).json({ error: "Not Authenticated" });
-      return; 
+      return;
     }
-    
+
     res.cookie("jwt", "", {
       httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       expires: new Date(0),
+      path: "/",
     });
 
     res.status(200).json({ message: "Logged out successfully" });
@@ -226,7 +255,9 @@ export const verifyAccount = async (req: Request, res: Response): Promise<void> 
       where: { id: verificationToken?.id },
     });
     // Emit the event AFTER successful verification (targeted)
-    io.to(userId).emit("user_created", updatedUser)
+    if (socketIO) {
+      socketIO.to(userId).emit("user_created", updatedUser);
+    }
     // Respond with success
     res
       .status(200)

@@ -6,6 +6,7 @@ import Search from "./Search";
 import MessageItem from "./MessageItem";
 import { FiFolder } from "react-icons/fi";
 import { UserPanelProps } from "../../types/message.types";
+import { Logout } from "../chat/Logout";
 
 const UserPanel = ({ onItemClick }: UserPanelProps) => {
   const { user, conversations } = useAuthStore();
@@ -34,26 +35,30 @@ const UserPanel = ({ onItemClick }: UserPanelProps) => {
 
   return (
     <div className="w-full h-full flex flex-col p-4 pb-10 overflow-y-auto">
+      {/* Current user profile */}
       <div
-        className="flex items-center mb-4 p-2 cursor-pointer transition-transform duration-300 hover:scale-105"
+        className="flex items-center gap-3 p-3 rounded-2xl bg-surface-light dark:bg-surface-borderDark border border-surface-border dark:border-surface-borderDark cursor-pointer hover:bg-surface-border dark:hover:bg-surface-borderDark transition-colors"
         onClick={() => setShowProfile(true)}
       >
         <img
           src={user?.photoProfile || defaultAvatar}
           alt="Avatar"
-          className="w-10 h-10 rounded-full object-cover"
+          className="avatar-md ring-primary-200 dark:ring-primary-800"
         />
-        <div className="ml-3 flex flex-col">
-          <p className="font-semibold text-sm">{user?.name}</p>
-          {user?.bio && <p className="text-xs">{user.bio}</p>}
+        <div className="flex-1 min-w-0 flex flex-col">
+          <p className="font-semibold text-gray-900 dark:text-white truncate">{user?.name}</p>
+          {user?.bio && <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.bio}</p>}
         </div>
       </div>
+
       <Search
         search={search}
         handleSearch={handleSearch}
         handleShowUnseenMessages={handleShowUnseenMessages}
+        showUnseenMessages={showUnseenMessages}
       />
-      <div className="space-y-2">
+
+      <div className="flex-1 space-y-1 overflow-y-auto">
         {filteredConversations.length > 0 ? (
           filteredConversations.map((conv) => (
             <MessageItem
@@ -63,11 +68,16 @@ const UserPanel = ({ onItemClick }: UserPanelProps) => {
             />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center mt-10 text-center text-gray-500">
-            <FiFolder className="w-12 h-12 mb-3 text-gray-400" />
-            <p className="text-sm font-medium">No conversations found...</p>
+          <div className="flex flex-col items-center justify-center mt-10 text-center text-gray-500 dark:text-gray-400 px-4">
+            <FiFolder className="empty-state-icon" />
+            <p className="empty-state-title">No conversations yet</p>
+            <p className="empty-state-subtitle">Start a new chat to see it here</p>
           </div>
         )}
+      </div>
+
+      <div className="p-2 border-t border-surface-border dark:border-surface-borderDark">
+        <Logout />
       </div>
     </div>
   );

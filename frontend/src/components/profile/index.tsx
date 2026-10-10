@@ -13,7 +13,7 @@ type ProfileProps = {
 
 
 const Profile = ({onclose}: ProfileProps) => {
-  const { user, token, setUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const { mutate, isPending } = useUpdateProfileInfo();
 
   const [name, setName] = useState(user?.name || "");
@@ -25,7 +25,6 @@ const Profile = ({onclose}: ProfileProps) => {
     mutate(
       {
         data: { name, bio },
-        token,
         id: user.id,
       },
       {
@@ -45,18 +44,19 @@ const Profile = ({onclose}: ProfileProps) => {
   };
 
   if (isPending) {
-    return <Spinner />
+    return <Spinner small size="sm" />
   }
   return (
     <div className="w-full h-full p-4 overflow-auto">
-      <div className="flex items-center mb-6">
+      <div className="flex items-center gap-3 mb-6">
         <button
-          className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 transition-transform duration-300 hover:scale-105"
+          className="btn-icon"
           onClick={onclose}
+          aria-label="Close profile"
         >
-          <IoMdReturnLeft size={18} />
+          <IoMdReturnLeft size={20} />
         </button>
-        <p className="ml-4 font-semibold text-lg">Profile</p>
+        <p className="font-semibold text-lg text-gray-900 dark:text-white">Profile</p>
       </div>
       <EditProfileImage />
       <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>

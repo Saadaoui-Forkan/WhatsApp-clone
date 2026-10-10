@@ -20,33 +20,48 @@ const VerifyEmail = () => {
   if (!token || !userId) return null
 
   if (isPending) {
-    return <Spinner />
+    return (
+      <div className="auth-layout">
+        <div className="auth-card text-center">
+          <Spinner size="lg" />
+        </div>
+      </div>
+    )
   }
 
   return (
-    <section className="flex items-center justify-center min-h-[calc(100vh-2rem)] px-4">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md p-6 text-center transition-all duration-300">
+    <section className="auth-layout">
+      <div className="auth-card text-center animate-in">
         {isError ? (
           <>
-            <AiOutlineWarning className="text-red-500 dark:text-red-400 text-6xl mx-auto animate-pulse mb-4" />
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
-              {errorMessage}
+            <AiOutlineWarning className="text-error-500 dark:text-error-400 text-6xl mx-auto animate-pulse mb-4" />
+            <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Verification failed
             </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
-              Please check your verification link or request a new one.
+            <p className="text-gray-500 dark:text-gray-400 mb-6">
+              {errorMessage || "The verification link is invalid or has expired."}
             </p>
+            <Link
+              to="/forgot-password"
+              className="btn-secondary inline-flex"
+            >
+              Request new link
+            </Link>
           </>
         ) : (
           <>
-            <AiOutlineCheckCircle className="text-teal-600 dark:text-teal-400 text-6xl mx-auto animate-bounce mb-4" />
-            <h1 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-white mb-2">
-              {data?.message}
+            <AiOutlineCheckCircle className="text-primary-600 dark:text-primary-400 text-6xl mx-auto animate-bounce mb-4" />
+            <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+              {data?.message || "Email verified successfully"}
             </h1>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">
+              Your account is now active. You can sign in to start chatting.
+            </p>
             <Link
               to="/login"
-              className="inline-block bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-6 rounded-full transition-colors duration-300"
+              className="btn-primary inline-flex"
             >
-              Login
+              Go to login
             </Link>
           </>
         )}

@@ -25,6 +25,10 @@ export interface AuthLinkProps {
   link: string;
 }
 
+export interface EmailSentConfirmationProps {
+  onClose: () => void;
+}
+
 export interface IUser {
   id: string;
   name: string;
@@ -37,17 +41,16 @@ export interface IFriend {
   id: string;
   name: string;
   bio?: string;
-  profilePicture: {
+  profilePicture?: {
     publicId: string;
     secureUrl: string;
-  };
+  } | null;
 }
 
 export interface IAuth {
   user: IUser | null
-  token: string
   setUser: (user: IUser | null) => void
-  setToken: (token: string) => void
+  clearAuth: () => void
   friends: IFriend[]
   setFriends: (friends: IFriend[]) => void
   addFriend: (friend: IFriend) => void

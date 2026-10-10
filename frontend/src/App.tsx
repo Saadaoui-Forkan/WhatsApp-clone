@@ -1,5 +1,6 @@
 import Footer from "./components/Footer";
 import Theme from "./components/Theme";
+import InstallApp from "./components/InstallApp";
 import Router from "./routes";
 import { ToastContainer } from 'react-toastify'
 
@@ -10,9 +11,11 @@ function App() {
         autoClose={3000}
         position="top-right"
         theme="colored"
+        className="z-[100]"
       />
       <Theme/>
-      <div className="bg-white dark:bg-gray-700">
+      <InstallApp />
+      <div className="bg-surface-light dark:bg-surface-dark min-h-screen">
         <Router />
       </div>
       <Footer/>

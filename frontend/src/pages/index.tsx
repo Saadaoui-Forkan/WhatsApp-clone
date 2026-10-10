@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import io from "socket.io-client";
 import { useSocketStore } from "../store/socket.store";
 import { useAuthStore } from "../store/auth.store";
@@ -11,23 +11,19 @@ import { useMessageStore } from "../store/message.store";
 const Sidebar = lazy(() => import("../components/sidebar"));
 
 const Home = () => {
-  const { pathname } = useLocation();
-  const receiverId = pathname.slice(1);
   const { setSocket } = useSocketStore();
-  const { token, user, setFriends, setConversations, addFriend } = useAuthStore();
+  const { user, setFriends, setConversations, addFriend } = useAuthStore();
   const { addMessage, markAllAsSeen } = useMessageStore();
   const {
     data: conversationsData,
     isLoading: conversationsLoading,
     error: conversationsError,
-  } = useFetchConversations(token);
+  } = useFetchConversations();
 
   useEffect(() => {
-    if (!token) return
+    // Socket will read JWT from cookie automatically (withCredentials: true)
     const socket = io(process.env.REACT_APP_BACKEND_URL, {
-      query: {
-        token: token,
-      },
+      withCredentials: true,
     });
     setSocket(socket);
 
@@ -60,7 +56,7 @@ const Home = () => {
     return () => {
       socket.disconnect();
     };
-  }, [token, addFriend, addMessage, setSocket, markAllAsSeen, user?.id]);
+  }, [addFriend, addMessage, setSocket, markAllAsSeen, user]);
 
   useEffect(() => {
     if (conversationsData?.conversations) {
@@ -81,11 +77,11 @@ const Home = () => {
     return <Spinner />;
   }
   return (
-    <div className="flex h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="chat-layout">
       <Suspense fallback={<Spinner />}>
         <Sidebar />
       </Suspense>
-      <div className="flex-1 overflow-auto">
+      <div className="chat-main">
         <Outlet />
       </div>
     </div>

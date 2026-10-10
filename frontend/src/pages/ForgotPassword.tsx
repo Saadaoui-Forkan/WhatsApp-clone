@@ -1,6 +1,6 @@
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import AuthHeader from "../components/auth/AuthHeader";
-import { BtnClass, InputClass } from "../utils/classNames";
+import AuthLink from "../components/auth/AuthLink";
 import ErrorMessage from "../components/ErrorMessage";
 import { ForgetPasswordSchema } from "../utils/schemas";
 import { useForgotPassword } from "../hooks/usePassword";
@@ -39,35 +39,39 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
-      <div className="w-full max-w-md space-y-6">
-      <AuthHeader title="Forgot Password" subtitle=""/>
-          <Formik
-            initialValues={{ email: "" }}
-            validationSchema={ForgetPasswordSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ errors, touched }) => (
-              <Form className="space-y-4">
-                <div className="space-y-3">
-                  <Field
-                    type="text"
-                    name="email"
-                    className={`${InputClass}`}
-                    placeholder="Enter your email address ..."
-                  />
-                  <ErrorMessage errors={errors} touched={touched} name="email" />
-                </div>
-                <button
-                  type="submit"
-                  className={`${BtnClass}`}
-                  disabled={isPending}
-                >
-                  {isPending ? <Spinner small /> : "Send Reset Link"}
-                </button>
-              </Form>
-            )}
-          </Formik>
+    <div className="auth-layout">
+      <div className="auth-card">
+        <AuthHeader title="Forgot password" subtitle="Enter your email to receive a reset link" />
+        <Formik
+          initialValues={{ email: "" }}
+          validationSchema={ForgetPasswordSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched }) => (
+            <Form className="space-y-6">
+              <div>
+                <label htmlFor="email" className="sr-only">Email address</label>
+                <Field
+                  id="email"
+                  type="email"
+                  name="email"
+                  className="input-field"
+                  placeholder="Email address"
+                  autoComplete="email"
+                />
+                <ErrorMessage errors={errors} touched={touched} name="email" />
+              </div>
+              <button
+                type="submit"
+                className="btn-primary w-full py-3"
+                disabled={isPending}
+              >
+                {isPending ? <Spinner small size="sm" /> : "Send reset link"}
+              </button>
+            </Form>
+          )}
+        </Formik>
+        <AuthLink to="/login" link="Back to login" text="Remember your password?" />
       </div>
     </div>
   );

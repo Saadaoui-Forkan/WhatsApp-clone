@@ -1,6 +1,6 @@
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import AuthHeader from "../components/auth/AuthHeader";
-import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
+import AuthLink from "../components/auth/AuthLink";
 import ErrorMessage from "../components/ErrorMessage";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useShowConfirmPassword, useToggleShow } from "../hooks/useToggleShow";
@@ -50,52 +50,69 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
-      <div className="w-full max-w-md space-y-6">
-        <AuthHeader title="Reset your password" subtitle="" />
-          <Formik
-            initialValues={{ password: "", confirmPassword: "" }}
-            validationSchema={ResetPasswordSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ errors, touched }) => (
-              <Form className="space-y-4">
-                <div className="relative">
-                  <Field
-                    type={!show ? "password" : "text"}
-                    name="password"
-                    className={`${InputClass}`}
-                    placeholder="Enter your new password ..."
-                  />
-                  <div onClick={toggleVisibility} className={`${IconBtnClass}`}>
-                    {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                  </div>
-                </div>
-                  <ErrorMessage errors={errors} touched={touched} name="password" />
-
-                <div className="relative">
-                  <Field
-                    type={!showConfirmPassword ? "password" : "text"}
-                    name="confirmPassword"
-                    className={`${InputClass}`}
-                    placeholder="Confirm your new password ..."  
-                  />
-                  <div onClick={toggleShowConfirmPassword} className={`${IconBtnClass}`}>
-                    {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                  </div>
-                </div>
-                  <ErrorMessage errors={errors} touched={touched} name="confirmPassword" />
-
+    <div className="auth-layout">
+      <div className="auth-card">
+        <AuthHeader title="Reset your password" subtitle="Enter your new password below" />
+        <Formik
+          initialValues={{ password: "", confirmPassword: "" }}
+          validationSchema={ResetPasswordSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched }) => (
+            <Form className="space-y-6">
+              <div className="relative">
+                <label htmlFor="password" className="sr-only">New password</label>
+                <Field
+                  id="password"
+                  type={show ? "text" : "password"}
+                  name="password"
+                  className="input-field pr-12"
+                  placeholder="New password"
+                  autoComplete="new-password"
+                />
                 <button
-                  type="submit"
-                  className={`${BtnClass}`}
-                  disabled={isPending}
+                  type="button"
+                  onClick={toggleVisibility}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  aria-label={show ? "Hide password" : "Show password"}
                 >
-                  {isPending ? <Spinner small /> : "Reset Password"} 
+                  {show ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
                 </button>
-              </Form>
-            )}
-          </Formik>
+                <ErrorMessage errors={errors} touched={touched} name="password" />
+              </div>
+
+              <div className="relative">
+                <label htmlFor="confirmPassword" className="sr-only">Confirm new password</label>
+                <Field
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  className="input-field pr-12"
+                  placeholder="Confirm new password"
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={toggleShowConfirmPassword}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                </button>
+                <ErrorMessage errors={errors} touched={touched} name="confirmPassword" />
+              </div>
+
+              <button
+                type="submit"
+                className="btn-primary w-full py-3"
+                disabled={isPending}
+              >
+                {isPending ? <Spinner small size="sm" /> : "Reset password"}
+              </button>
+            </Form>
+          )}
+        </Formik>
+        <AuthLink to="/login" link="Back to login" text="" />
       </div>
     </div>
   );

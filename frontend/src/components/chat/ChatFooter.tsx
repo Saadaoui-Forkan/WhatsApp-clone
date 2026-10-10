@@ -1,5 +1,4 @@
 import { TbSend, TbPhotoFilled } from "react-icons/tb";
-import { InputClass } from "../../utils/classNames";
 import { useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../../store/socket.store";
 import { useLocation } from "react-router-dom";
@@ -10,7 +9,7 @@ import { toast } from "react-toastify";
 const ChatFooter = () => {
   const location = useLocation();
   const { socket } = useSocketStore();
-  const { token } = useAuthStore();
+  const { typing } = useAuthStore();
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -71,11 +70,10 @@ const ChatFooter = () => {
       let attachment = null;
 
       // Upload image first if present
-      if (hasImage && selectedFileRef.current && token) {
+      if (hasImage && selectedFileRef.current) {
         setUploading(true);
         const { attachment: uploadedAttachment } = await uploadAttachmentApi(
-          selectedFileRef.current,
-          token
+          selectedFileRef.current
         );
         attachment = uploadedAttachment;
         setUploading(false);
@@ -114,13 +112,13 @@ const ChatFooter = () => {
   }, [input, previewImage, receiverId, socket]);
 
   return (
-    <div className="p-4 border-t border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+    <div className="chat-footer">
       <label htmlFor="chat" className="sr-only">
         Your message
       </label>
-      <div className="flex items-end gap-2">
+      <div className="flex items-end gap-3">
         {/* Image upload button */}
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <input
             ref={fileInputRef}
             type="file"
@@ -132,20 +130,20 @@ const ChatFooter = () => {
           />
           <label
             htmlFor="image-upload"
-            className={`p-2 rounded-md transition ${
+            className={`btn-icon flex-shrink-0 ${
               uploading
-                ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
-                : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
             title="Attach image"
           >
-            <TbPhotoFilled size={22} className="text-gray-700 dark:text-gray-300" />
+            <TbPhotoFilled size={22} className="text-gray-600 dark:text-gray-300" />
           </label>
         </div>
 
         {/* Image preview */}
         {previewImage && (
-          <div className="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+          <div className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border border-surface-border dark:border-surface-borderDark animate-fade-in">
             <img
               src={previewImage}
               alt="Preview"
@@ -154,7 +152,7 @@ const ChatFooter = () => {
             <button
               type="button"
               onClick={removePreview}
-              className="absolute top-1 right-1 p-1 rounded-full bg-black/50 text-white hover:bg-black/70 transition"
+              className="absolute top-1 right-1 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
               aria-label="Remove image"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -168,9 +166,7 @@ const ChatFooter = () => {
         {/* Textarea */}
         <textarea
           id="chat"
-          className={`${InputClass} h-12 resize-none flex-1 ${
-            error ? "border-red-500 focus:ring-red-500" : ""
-          }`}
+          className={`input-field h-12 resize-none flex-1 ${error ? "border-error-500 focus:ring-error-500" : ""}`}
           placeholder="Your message..."
           value={input}
           onChange={(e) => {
@@ -181,23 +177,38 @@ const ChatFooter = () => {
           }}
           onKeyDown={handleKeyPress}
           disabled={uploading}
+          rows={1}
         />
 
         {/* Send button */}
         <button
-          className={`p-2 rounded-md transition flex-shrink-0 ${
+          className={`btn-primary flex-shrink-0 ${
             uploading
-              ? "bg-gray-400 cursor-not-allowed"
+              ? "opacity-50 cursor-not-allowed"
               : (input.trim() || previewImage)
-              ? "bg-teal-600 hover:bg-teal-700"
-              : "bg-gray-400 cursor-not-allowed"
+                ? ""
+                : "opacity-50 cursor-not-allowed"
           }`}
-          disabled={!input.trim() && !previewImage || uploading}
+          disabled={(!input.trim() && !previewImage) || uploading}
           onClick={sendMessage}
         >
-          <TbSend size={20} className="text-white" />
+          {uploading ? (
+            <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            <TbSend size={20} />
+          )}
         </button>
       </div>
+
+      {/* Typing indicator */}
+      {typing && (
+        <div className="typing-indicator mt-2 pl-1 text-gray-500 dark:text-gray-400 animate-fade-in">
+          <span className="text-xs font-medium">Typing</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce-subtle" style={{ animationDelay: '0ms' }} />
+          <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce-subtle" style={{ animationDelay: '150ms' }} />
+          <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce-subtle" style={{ animationDelay: '300ms' }} />
+        </div>
+      )}
     </div>
   );
 };

@@ -6,13 +6,11 @@ export const useUpdateProfileInfo = () => {
   return useMutation({
     mutationFn: ({
       data,
-      token,
       id,
     }: {
       data: ProfileInfo;
-      token: string;
       id: string;
-    }) => updateProfileInfoApi(data, token, id),
+    }) => updateProfileInfoApi(data, id),
   });
 };
 
@@ -20,12 +18,10 @@ export const useUpdateProfilePhoto = () => {
   return useMutation({
     mutationFn: ({
       file,
-      token,
       id,
     }: {
       file: File;
-      token: string;
       id: string;
-    }) => updateProfilePhotoApi(file, token, id),
+    }) => updateProfilePhotoApi(file, id),
   });
 };

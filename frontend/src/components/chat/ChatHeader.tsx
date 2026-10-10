@@ -7,34 +7,39 @@ import { getContactById } from "../../utils/helpers";
 const ChatHeader = () => {
   const location = useLocation();
   const receiverId = location.pathname.slice(1);
-  const { friends, typing } = useAuthStore();
-  const contact = getContactById(friends, receiverId);
+  const { conversations } = useAuthStore();
+  const contact = getContactById(conversations.map(c => c.user), receiverId);
+  const unreadCount = conversations.find(c => c.user.id === receiverId)?.unreadCount ?? 0;
+
   return (
-    <div className="p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-      <Logout />
-      {contact && (
-        <div className="flex items-center gap-3">
-          <img
-            src={contact?.profilePicture?.secureUrl || defaultAvatar}
-            alt="Avatar"
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <div>
-            <p className="font-semibold text-sm">{contact.name}</p>
-            <p className="text-xs text-green-500">
-              {typing ? (
-                <span className="flex gap-1">
-                  <span className="animate-bounce delay-75">.</span>
-                  <span className="animate-bounce delay-150">.</span>
-                  <span className="animate-bounce delay-[225ms]">.</span>
-                </span>
-              ) : (
-                contact.bio
-              )}
-            </p>
-          </div>
+    <div className="chat-header">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        <img
+          src={contact?.profilePicture?.secureUrl || defaultAvatar}
+          alt={contact?.name || "Avatar"}
+          className="avatar-md ring-2 ring-primary-200 dark:ring-primary-800 flex-shrink-0"
+        />
+        <div className="min-w-0">
+          <p className="font-semibold text-gray-900 dark:text-white truncate">{contact?.name}</p>
+          <p className="text-xs flex items-center gap-1.5">
+            {unreadCount > 0 ? (
+              <span className="flex gap-0.5 text-primary-600 dark:text-primary-400">
+                <span className="animate-bounce delay-75">.</span>
+                <span className="animate-bounce delay-150">.</span>
+                <span className="animate-bounce delay-[225ms]">.</span>
+              </span>
+            ) : (
+              <span className="text-gray-500 dark:text-gray-400">{contact?.bio || "Online"}</span>
+            )}
+          </p>
         </div>
-      )}
+      </div>
+      <div className="flex items-center gap-2">
+        {unreadCount > 0 && (
+          <span className="unread-badge">{unreadCount > 99 ? "99+" : unreadCount}</span>
+        )}
+        <Logout />
+      </div>
     </div>
   );
 };

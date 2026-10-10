@@ -6,7 +6,6 @@ import { LoginFormValues } from "../types/user.types";
 import ErrorMessage from "../components/ErrorMessage";
 import { loginInitialValues } from "../utils/formInitialValues";
 import { loginSchema } from "../utils/schemas";
-import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
 import { useLogin } from "../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth.store";
@@ -18,7 +17,7 @@ const LoginPage = () => {
   const { show, toggleVisibility } = useToggleShow();
   const navigate = useNavigate();
   const { mutate, isPending } = useLogin()
-  const { setToken, setUser } = useAuthStore()
+  const { setUser } = useAuthStore()
 
   const onSubmit = (
     values: LoginFormValues,
@@ -26,14 +25,13 @@ const LoginPage = () => {
   ) => {
     mutate(values, {
       onSuccess: (data) => {
-        const { id, name, bio, profilePicture, token } = data.data
+        const { id, name, bio, profilePicture } = data.data
         setUser({
           id,
           name,
           bio,
           photoProfile: profilePicture?.secureUrl ?? ""
         })
-        setToken(token)
         toast.success(data.message)
         navigate('/')
         actions.resetForm()
@@ -53,8 +51,8 @@ const LoginPage = () => {
     })
   };
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-2rem)] px-4">
-      <div className="w-full max-w-md">
+    <div className="auth-layout">
+      <div className="auth-card">
         <AuthHeader
           title="Welcome back"
           subtitle="Log in to continue chatting"
@@ -67,46 +65,57 @@ const LoginPage = () => {
           {({ errors, touched }) => (
             <Form className="space-y-6">
               <div className="space-y-4">
-                <Field
-                  type="text"
-                  name="email"
-                  className={`${InputClass}`}
-                  placeholder="Email address ..."
-                />
-                <ErrorMessage errors={errors} touched={touched} name="email" />
+                <div>
+                  <label htmlFor="email" className="sr-only">Email address</label>
+                  <Field
+                    id="email"
+                    type="email"
+                    name="email"
+                    className="input-field"
+                    placeholder="Email address"
+                    autoComplete="email"
+                  />
+                  <ErrorMessage errors={errors} touched={touched} name="email" />
+                </div>
 
                 <div className="relative">
+                  <label htmlFor="password" className="sr-only">Password</label>
                   <Field
+                    id="password"
                     type={show ? "text" : "password"}
                     name="password"
-                    className={`${InputClass}`}
-                    placeholder="Password ..."
+                    className="input-field pr-12"
+                    placeholder="Password"
+                    autoComplete="current-password"
                   />
-                  <div onClick={toggleVisibility} className={`${IconBtnClass}`}>
-                    {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                  </div>
+                  <button
+                    type="button"
+                    onClick={toggleVisibility}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    aria-label={show ? "Hide password" : "Show password"}
+                  >
+                    {show ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                  </button>
+                  <ErrorMessage
+                    errors={errors}
+                    touched={touched}
+                    name="password"
+                  />
                 </div>
-                <ErrorMessage
-                  errors={errors}
-                  touched={touched}
-                  name="password"
-                />
               </div>
 
               <button
                 type="submit"
-                className={`${BtnClass} ${
-                  isPending ? "opacity-60 cursor-not-allowed" : ""
-                }`}
+                className="btn-primary w-full py-3"
                 disabled={isPending}
               >
-                {isPending ? <Spinner small /> : "Login"}
+                {isPending ? <Spinner small size="sm" /> : "Log in"}
               </button>
 
               <div className="text-center">
                 <Link
                   to="/forgot-password"
-                  className="inline-block text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200"
+                  className="inline-block text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -116,7 +125,7 @@ const LoginPage = () => {
         </Formik>
         <AuthLink
           to="/register"
-          link="Register"
+          link="Create an account"
           text="Don't have an account?"
         />
       </div>

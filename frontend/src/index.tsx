@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { setClearAuthStore } from "./api/axios";
+import { useAuthStore } from "./store/auth.store";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,6 +16,25 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Initialize the clear auth store function for axios interceptor
+setClearAuthStore(() => {
+  useAuthStore.getState().clearAuth();
+});
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(
+      (registration) => {
+        console.log('SW registered: ', registration.scope);
+      },
+      (registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      }
+    );
+  });
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

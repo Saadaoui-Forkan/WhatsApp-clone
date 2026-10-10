@@ -7,9 +7,8 @@ export const useAuthStore = create<IAuth>()(
   persist(
     (set) => ({
       user: null,
-      token: "",
       setUser: (user) => set({ user }),
-      setToken: (token) => set({ token }),
+      clearAuth: () => set({ user: null }),
       friends: [],
       setFriends: (friends) => set({friends}),
       addFriend: (friend: IFriend) => 

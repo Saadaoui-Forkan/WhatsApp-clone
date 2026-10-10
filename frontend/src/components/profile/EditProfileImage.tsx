@@ -6,7 +6,7 @@ import Spinner from "../Spinner";
 import { defaultAvatar } from "../../utils/constantes";
 
 const EditProfileImage = () => {
-  const { user, token, setUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const { mutate, isPending } = useUpdateProfilePhoto();
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,9 +16,9 @@ const EditProfileImage = () => {
   };
 
   const updateProfilePhoto = (selectedFile: File) => {
-    if (!token || !user) return
+    if (!user) return
     mutate(
-      {file: selectedFile, token, id:user?.id}, {
+      {file: selectedFile, id:user?.id}, {
       onSuccess: (data) => {
         setUser({
           ...user,
@@ -27,7 +27,7 @@ const EditProfileImage = () => {
         toast.success(data?.message)
       },
       onError: (err) => {
-        console.log(err)
+        console.error(err)
         toast.error('An unexpected error occurred.')
       }
     })
@@ -35,7 +35,7 @@ const EditProfileImage = () => {
 
   if (isPending) {
     return (
-      <Spinner />
+      <Spinner small size="sm" />
     );
   }
   return (
@@ -44,12 +44,12 @@ const EditProfileImage = () => {
         <img
           src={user?.photoProfile ? user?.photoProfile : defaultAvatar}
           alt="Avatar"
-          className="w-full h-full rounded-full object-cover"
+          className="w-full h-full rounded-full object-cover ring-4 ring-white dark:ring-surface-dark"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity">
-          <div className="text-white flex flex-col items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-200">
+          <div className="text-white flex flex-col items-center justify-center gap-1">
             <FaCamera size={20} />
-            <p className="text-xs">Edit</p>
+            <p className="text-xs font-medium">Edit</p>
           </div>
           <input
             type="file"

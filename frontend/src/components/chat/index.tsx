@@ -12,8 +12,8 @@ const Chat = () => {
   const { pathname } = useLocation();
   const receiverId = pathname.slice(1);
   const { messagesByUser, setMessagesForUser, prependMessages } = useMessageStore();
-  const { user, token } = useAuthStore();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useFetchConversationMessages(receiverId, token);
+  const { user } = useAuthStore();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useFetchConversationMessages(receiverId);
   const scrollRef = useRef<HTMLDivElement>(null);
   const loadedPagesRef = useRef(0);
 
@@ -30,7 +30,7 @@ const Chat = () => {
       }
       loadedPagesRef.current = data.pages.length;
     }
-  }, [data?.pages.length, receiverId, setMessagesForUser, prependMessages]);
+  }, [data?.pages, receiverId, setMessagesForUser, prependMessages]);
 
   const handleScroll = () => {
     if (scrollRef.current) {

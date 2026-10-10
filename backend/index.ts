@@ -16,6 +16,7 @@ import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 import helmet from "helmet";
 import { globalLimiter } from "./routes/rateLimiters.js";
 import { sendMessageSchema } from "./utils/validationSchema.js";
+import { setSocketIO } from "./controllers/user.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +39,9 @@ export const io = new Server(server, {
     credentials: true,
   },
 });
+
+// Provide socket.io instance to controllers (avoid circular dependency)
+setSocketIO(io);
 
 io.use(isSocketAuth);
 

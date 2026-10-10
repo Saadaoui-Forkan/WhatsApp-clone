@@ -6,7 +6,6 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import ErrorMessage from "../components/ErrorMessage";
 import { registerInitialValues } from "../utils/formInitialValues";
 import { registerSchema } from "../utils/schemas";
-import { BtnClass, IconBtnClass, InputClass } from "../utils/classNames";
 import { useRegister } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
@@ -46,11 +45,11 @@ const Register = () => {
     });
   };
   return (
-    <div className="flex items-center justify-center p-4">
+    <div className="auth-layout">
       {openVerifyEmailModel && (
-        <EmailSentConfirmation/>
+        <EmailSentConfirmation onClose={() => setOpenVerifyEmailModel(false)} />
       )}
-      <div className="w-full max-w-md">
+      <div className="auth-card">
         <AuthHeader title="Join us" subtitle="Create your account in seconds" />
 
         <Formik
@@ -61,66 +60,90 @@ const Register = () => {
           {({ errors, touched }) => (
             <Form className="space-y-6">
               <div className="space-y-4">
-                <Field
-                  type="text"
-                  name="name"
-                  className={`${InputClass}`}
-                  placeholder="Full name ..."
-                />
-                <ErrorMessage errors={errors} touched={touched} name="name" />
-                <Field
-                  type="text"
-                  name="email"
-                  className={`${InputClass}`}
-                  placeholder="Email address ..."
-                />
-                <ErrorMessage errors={errors} touched={touched} name="email" />
-                <div className="relative">
+                <div>
+                  <label htmlFor="name" className="sr-only">Full name</label>
                   <Field
+                    id="name"
+                    type="text"
+                    name="name"
+                    className="input-field"
+                    placeholder="Full name"
+                    autoComplete="name"
+                  />
+                  <ErrorMessage errors={errors} touched={touched} name="name" />
+                </div>
+                <div>
+                  <label htmlFor="email" className="sr-only">Email address</label>
+                  <Field
+                    id="email"
+                    type="email"
+                    name="email"
+                    className="input-field"
+                    placeholder="Email address"
+                    autoComplete="email"
+                  />
+                  <ErrorMessage errors={errors} touched={touched} name="email" />
+                </div>
+                <div className="relative">
+                  <label htmlFor="password" className="sr-only">Password</label>
+                  <Field
+                    id="password"
                     type={show ? "text" : "password"}
                     name="password"
-                    className={`${InputClass}`}
-                    placeholder="Password ..."
+                    className="input-field pr-12"
+                    placeholder="Password"
+                    autoComplete="new-password"
                   />
-                  <div onClick={toggleVisibility} className={`${IconBtnClass}`}>
-                    {show ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                  </div>
+                  <button
+                    type="button"
+                    onClick={toggleVisibility}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    aria-label={show ? "Hide password" : "Show password"}
+                  >
+                    {show ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                  </button>
+                  <ErrorMessage
+                    errors={errors}
+                    touched={touched}
+                    name="password"
+                  />
                 </div>
-                <ErrorMessage
-                  errors={errors}
-                  touched={touched}
-                  name="password"
-                />
                 <div className="relative">
+                  <label htmlFor="confirmPassword" className="sr-only">Confirm password</label>
                   <Field
+                    id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
-                    className={`${InputClass}`}
-                    placeholder="Confirm password ..."
+                    className="input-field pr-12"
+                    placeholder="Confirm password"
+                    autoComplete="new-password"
                   />
-                  <div onClick={toggleShowConfirmPassword} className={`${IconBtnClass}`}>
-                    {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                  </div>
+                  <button
+                    type="button"
+                    onClick={toggleShowConfirmPassword}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    {showConfirmPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                  </button>
+                  <ErrorMessage
+                    errors={errors}
+                    touched={touched}
+                    name="confirmPassword"
+                  />
                 </div>
-                <ErrorMessage
-                  errors={errors}
-                  touched={touched}
-                  name="confirmPassword"
-                />
               </div>
               <button
                 type="submit"
-                className={`${BtnClass} ${
-                  isPending ? "opacity-60 cursor-not-allowed" : ""
-                }`}
+                className="btn-primary w-full py-3"
                 disabled={isPending}
               >
-                {isPending ? <Spinner small /> : "Register"}
+                {isPending ? <Spinner small size="sm" /> : "Create account"}
               </button>
             </Form>
           )}
         </Formik>
-        <AuthLink to="/login" link="Login" text="Already have an account?" />
+        <AuthLink to="/login" link="Log in" text="Already have an account?" />
       </div>
     </div>
   );

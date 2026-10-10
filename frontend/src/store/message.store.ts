@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { IMessage, IMessages } from '../types/message.types';
+import { IMessages } from '../types/message.types';
 
 export const useMessageStore = create<IMessages>()(
   devtools(

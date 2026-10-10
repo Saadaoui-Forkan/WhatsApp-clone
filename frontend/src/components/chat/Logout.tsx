@@ -7,14 +7,13 @@ import Spinner from "../Spinner";
 
 export const Logout = () => {
   const navigate = useNavigate()
-  const { setUser, setToken, token } = useAuthStore()
+  const { setUser } = useAuthStore()
   const {mutate: logout, isPending} = useLogout()
 
   const handleLogout = () => {
-    logout(token, {
+    logout(undefined, {
       onSuccess: () => {
         setUser(null);
-        setToken("");
         toast.success("Logged out successfully");
         navigate("/login"); 
       },
@@ -25,16 +24,16 @@ export const Logout = () => {
   };
 
   if (isPending) {
-    return <Spinner/>
+    return <Spinner small size="sm" />
   }
   
   return (
-    <button className="fixed top-4 right-12 md:right-2 p-2 rounded-md bg-gray-200 dark:bg-gray-700">
-      <RiLogoutCircleRLine
-        size={18}
-        className="text-emerald-600 dark:text-purple-300"
-        onClick={handleLogout}
-      />
+    <button 
+      onClick={handleLogout}
+      className="btn-icon text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30"
+      aria-label="Log out"
+    >
+      <RiLogoutCircleRLine size={20} />
     </button>
   );
 };

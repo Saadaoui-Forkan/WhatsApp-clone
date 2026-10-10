@@ -1,12 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getConversationMessagesApi } from "../api/message.api";
 
-export const useFetchConversationMessages = (userId: string, token: string) => {
+export const useFetchConversationMessages = (userId: string) => {
   return useInfiniteQuery({
-    queryKey: ["messages", userId, token],
-    queryFn: ({ pageParam }) => getConversationMessagesApi(userId, token, pageParam),
+    queryKey: ["messages", userId],
+    queryFn: ({ pageParam }) => getConversationMessagesApi(userId, pageParam),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled: !!userId && !!token,
+    enabled: !!userId,
     initialPageParam: undefined,
   });
 };

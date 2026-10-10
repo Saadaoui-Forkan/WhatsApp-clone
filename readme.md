@@ -61,7 +61,7 @@ This project is a full-stack real-time chat application designed to offer a comp
 
 ### ⚙️ PWA (Progressive Web App)
 - The application is installable on any device (desktop, mobile, tablet).
-- Works offline with service workers and responsive design.
+- **Installable only** — no offline caching; requires network connection.
 - Looks and feels like a native app when installed.
 
 - ✅ User registration & login

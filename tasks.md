@@ -86,35 +86,35 @@ Suivi de l'avancement du projet. ✅ = terminé, ⬜ = à faire.
 
 ---
 
-## Phase 5 — UI / couleurs émeraude-teal ⬜
+## Phase 5 — UI / couleurs émeraude-teal ✅
 
-- [ ] `tailwind.config.js` + `index.css` : palette + typo Inter + ombres + rayons
-- [ ] Restyler : `AuthHeader`, pages auth, `Sidebar`/`UserPanel`/`Search`/`MessageItem`
-- [ ] Restyler : `ChatHeader`, `ChatMessage`, `ChatFooter`, `Spinner`, `Footer`, `Theme`, `NotFound`
-- [ ] Bulles + horodatage + coches « vu » + indicateur « en train d'écrire » lié au contact
-- [ ] Axios unique + intercepteur `401` → déconnexion + redirect
-- [ ] Erreurs → toast (fin des `catch { console.log }`)
-
----
-
-## Phase 6 — PWA installable ⬜
-
-- [ ] `manifest.json` : icônes 192 + 512 en `purpose:"any"` **et** `"maskable"`
-- [ ] `public/sw.js` minimal (handler `fetch` pass-through) + enregistrement dans `index.tsx`
-- [ ] Bouton « Installer l'app » (`beforeinstallprompt`) + instructions iOS
-- [ ] Métas iOS dans `index.html`
-- [ ] Corriger `readme.md` (« offline » → « installable uniquement »)
+- [x] `tailwind.config.js` + `index.css` : palette + typo Inter + ombres + rayons
+- [x] Restyler : `AuthHeader`, pages auth, `Sidebar`/`UserPanel`/`Search`/`MessageItem`
+- [x] Restyler : `ChatHeader`, `ChatMessage`, `ChatFooter`, `Spinner`, `Footer`, `Theme`, `NotFound`
+- [x] Bulles + horodatage + coches « vu » + indicateur « en train d'écrire » lié au contact
+- [x] Axios unique + intercepteur `401` → déconnexion + redirect
+- [x] Erreurs → toast (fin des `catch { console.log }`)
 
 ---
 
-## Phase 7 — Auth cookie `httpOnly` ⬜
+## Phase 6 — PWA installable ✅
 
-- [ ] `isAuth` lit `req.cookies.jwt` (via `cookie-parser`)
-- [ ] `isSocketAuth` lit le cookie dans `socket.handshake.headers.cookie`
-- [ ] Cookie : `secure`+`sameSite:"none"` (prod) / `lax`+`secure:false` (dev)
-- [ ] `GET /api/users/me` renvoie le user DB (select sûr)
-- [ ] Front : supprimer `token` du store, `withCredentials` partout, socket `withCredentials`
-- [ ] Garde de routes basée sur une query `me`
+- [x] `manifest.json` : icônes 192 + 512 en `purpose:"any"` **et** `"maskable"`
+- [x] `public/sw.js` minimal (handler `fetch` pass-through) + enregistrement dans `index.tsx`
+- [x] Bouton « Installer l'app » (`beforeinstallprompt`) + instructions iOS
+- [x] Métas iOS dans `index.html`
+- [x] Corriger `readme.md` (« offline » → « installable uniquement »)
+
+---
+
+## Phase 7 — Auth cookie `httpOnly` ✅
+
+- [x] `isAuth` lit `req.cookies.jwt` (via `cookie-parser`)
+- [x] `isSocketAuth` lit le cookie dans `socket.handshake.headers.cookie`
+- [x] Cookie : `secure`+`sameSite:"none"` (prod) / `lax`+`secure:false` (dev)
+- [x] `GET /api/users/me` renvoie le user DB (select sûr)
+- [x] Front : supprimer `token` du store, `withCredentials` partout, socket `withCredentials`
+- [x] Garde de routes basée sur une query `me`
 
 ---
 
@@ -137,7 +137,7 @@ Suivi de l'avancement du projet. ✅ = terminé, ⬜ = à faire.
 | 2 — Robustesse entrées | ✅ Terminé |
 | 3 — Messages curseur | ✅ Terminé |
 | 4 — Upload image | ✅ Terminé |
-| 5 — UI couleurs | ⬜ À faire |
-| 6 — PWA installable | ⬜ À faire |
-| 7 — Auth cookie | ⬜ À faire |
+| 5 — UI couleurs | ✅ Terminé |
+| 6 — PWA installable | ✅ Terminé |
+| 7 — Auth cookie | ✅ Terminé |
 | 8 — Tests / déploiement | ⬜ À faire |

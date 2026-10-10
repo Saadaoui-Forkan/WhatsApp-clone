@@ -11,15 +11,16 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="md:hidden fixed top-4 right-2 z-50">
+      <div className="md:hidden fixed top-4 right-4 z-50">
         <button
           onClick={toggleMobileSidebar}
-          className="p-2 rounded-md bg-gray-200 dark:bg-gray-700"
+          className="btn-icon"
+          aria-label={mobileSidebar ? "Close menu" : "Open menu"}
         >
           {!mobileSidebar ? (
-            <IoMdClose size={18} color="white" />
+            <IoMdClose size={20} />
           ) : (
-            <IoMdMenu size={18} color="white" />
+            <IoMdMenu size={20} />
           )}
         </button>
       </div>
@@ -27,9 +28,9 @@ export default function Sidebar() {
       <div
         className={`${
           mobileSidebar ? "block" : "hidden"
-        } md:block fixed md:relative w-full md:w-1/3 lg:w-1/4 h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-r border-gray-300 dark:border-gray-700`}
+        } md:block fixed md:relative w-full md:w-1/3 lg:w-1/4 h-full bg-white dark:bg-surface-cardDark border-r border-surface-border dark:border-surface-borderDark flex flex-col`}
       >
-        <UserPanel onItemClick={() => setMobileSidebar(false)}/>
+        <UserPanel onItemClick={() => setMobileSidebar(false)} />
       </div>
     </>
   );
