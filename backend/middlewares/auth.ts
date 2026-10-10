@@ -12,11 +12,11 @@ export const isAuth = (
   try {
     const token = req.headers.authorization;
     if (!token) {
-      res.status(401).json({ massage: "Unauthorized" });
+      res.status(401).json({ message: "Unauthorized" });
       return;
     }
 
-    const accessToken = token.split(" ")[1];
+    const accessToken = token.startsWith("Bearer ") ? token.slice(7) : token;
     const privateKey = process.env.ACCESS_TOKEN_SECRET as string;
     const decoded = jwt.verify(accessToken, privateKey) as JwtPayload;
 
@@ -28,11 +28,11 @@ export const isAuth = (
 };
 
 export const isSocketAuth = (socket: Socket, next: (err?: ExtendedError) => void) => {
-  const token = socket.handshake.query.token as string
-  if(!socket.handshake.query || !token) {
-    return next(new Error("Authentication Invalid"))
-  }
   try {
+    const token = (socket.handshake.query?.token as string | undefined) ?? socket.handshake.auth?.token as string | undefined;
+    if (!token) {
+      return next(new Error("Authentication Invalid"));
+    }
     const privateKey = process.env.ACCESS_TOKEN_SECRET as string;
     const decoded = jwt.verify(token, privateKey) as JwtPayload
     socket.data.userInfo = decoded.userInfo

@@ -9,14 +9,17 @@ export interface LoginUser {
   password: string
 }
 
-export interface UserInfo {
+/**
+ * Shape attached to `req.user` after authentication and embedded in the JWT.
+ */
+export interface UserPayload {
   id: string,
   email: string,
 }
 
+/** @deprecated Prefer `UserPayload`. Kept as an alias for backwards compatibility. */
+export type UserInfo = UserPayload;
+
 export interface JwtPayload {
-  userInfo: {
-    id: string;
-    email: string;
-  }
+  userInfo: UserPayload
 }

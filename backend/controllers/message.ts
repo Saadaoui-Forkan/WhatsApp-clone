@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { handleError } from "../utils/common.js";
-
-const prisma = new PrismaClient();
+import { prisma } from "../lib/prisma.js";
 
 /**
  *  @method  GET

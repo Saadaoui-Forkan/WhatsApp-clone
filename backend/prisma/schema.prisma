@@ -9,16 +9,16 @@ datasource db {
 }
 
 model User {
-  id                String    @id @default(auto()) @map("_id") @db.ObjectId
-  name              String
-  email             String    @unique
-  password          String
-  profilePicture    Json?
-  bio               String?
-  isAccountVerified Boolean @default(false)
-  sentMessages      Message[] @relation("SentMessages")
-  receivedMessages  Message[] @relation("ReceivedMessages")
-  verificationToken VerificationToken? 
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  email              String               @unique
+  password           String
+  profilePicture     Json?
+  bio                String?
+  isAccountVerified  Boolean              @default(false)
+  sentMessages       Message[]            @relation("SentMessages")
+  receivedMessages   Message[]            @relation("ReceivedMessages")
+  verificationTokens VerificationToken[]
 }
 
 model Message {
@@ -30,14 +30,25 @@ model Message {
   receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
   receiverId String   @db.ObjectId
   createdAt  DateTime @default(now())
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+enum VerificationTokenType {
+  email_verify
+  password_reset
 }
 
 model VerificationToken {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @unique @db.ObjectId
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String                @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String                @db.ObjectId
+  tokenHash String
+  type      VerificationTokenType
+  expiresAt DateTime
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

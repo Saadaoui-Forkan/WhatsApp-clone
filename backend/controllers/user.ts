@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from "express";
 import { loginSchema, registerSchema } from "../utils/validationSchema.js";
 import { LoginUser, RegisterUser } from "../types/user.types.js";
 import { handleError, validateData } from "../utils/common.js";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
 import crypto from "crypto"
@@ -10,8 +10,6 @@ import { sendEmail } from "../utils/nodemailer.js";
 import { getVerificationEmailTemplate } from "../utils/htmlTemplate.js";
 import { io } from "../index.js";
 import { CLIENT_DOMAIN } from "../utils/constantes.js";
-
-const prisma = new PrismaClient();
 
 /**
  *  @method  POST
@@ -35,7 +33,7 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
       return;
     }
     // Hash password
-    const hashPassword = await bcrypt.hash(password, 15);
+    const hashPassword = await bcrypt.hash(password, 12);
     // Create new user in database
     const newUser = await prisma.user.create({
       data: {
@@ -51,14 +49,18 @@ export const register: RequestHandler<any, any, RegisterUser> = async (
     });
     // Generate an email verification token
     const rawToken = crypto.randomBytes(32).toString("hex");
+    const { hashToken } = await import("../utils/hashToken.js");
+    const tokenHash = hashToken(rawToken);
     const vtoken = await prisma.verificationToken.create({
       data: {
         userId: newUser.id,
-        token: rawToken
+        tokenHash,
+        type: "email_verify",
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       }
     })
     // Create the verification link
-    const link = `${CLIENT_DOMAIN}/users/${newUser.id}/verify/${vtoken.token}`
+    const link = `${CLIENT_DOMAIN}/users/${newUser.id}/verify/${rawToken}`
     // Prepare the email content and send it
     const htmlTemplate = getVerificationEmailTemplate(link);
     await sendEmail(newUser.email, "Verify Your Email Address", htmlTemplate);
@@ -88,7 +90,7 @@ export const login: RequestHandler<any, any, LoginUser> = async (
     const validationPassed = validateData(loginSchema, req, res);
     if (!validationPassed) return;
     const user = await prisma.user.findUnique({ where: { email } });
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       // Check if email is verified
       if (!user.isAccountVerified) {
         res.status(400).json({ message: "Please verify your email address before logging in." });
@@ -178,7 +180,15 @@ export const verifyAccount = async (req: Request, res: Response): Promise<void> 
     const { userId, token } = req.params
     // Check if user exists
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        bio: true,
+        profilePicture: true,
+        isAccountVerified: true,
+      }
     });
     if (!user) {
       res.status(400).json({ message: "Invalid verification link." })
@@ -187,13 +197,19 @@ export const verifyAccount = async (req: Request, res: Response): Promise<void> 
     if (user?.isAccountVerified) {
       res.status(200).json({
         message: "Your account is already verified.",
-        user,
       });
       return
     }
     // Check if token exists for this user
+    const { hashToken } = await import("../utils/hashToken.js");
+    const tokenHash = hashToken(token);
     const verificationToken = await prisma.verificationToken.findFirst({
-      where: { userId: user?.id, token },
+      where: {
+        userId: user?.id,
+        tokenHash,
+        type: "email_verify",
+        expiresAt: { gt: new Date() },
+      },
     });
     if (!verificationToken) {
       res.status(400).json({ message: "Invalid or expired verification link." })
@@ -217,8 +233,8 @@ export const verifyAccount = async (req: Request, res: Response): Promise<void> 
     await prisma.verificationToken.delete({
       where: { id: verificationToken?.id },
     });
-    // Emit the event AFTER successful verification
-    io.emit("user_created", updatedUser)
+    // Emit the event AFTER successful verification (targeted)
+    io.to(userId).emit("user_created", updatedUser)
     // Respond with success
     res
       .status(200)

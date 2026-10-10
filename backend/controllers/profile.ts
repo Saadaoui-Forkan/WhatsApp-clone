@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import { handleError } from "../utils/common.js";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../lib/prisma.js";
 import { ProfileInfo } from "../types/profile.types.js";
 import cloudinary from "../middlewares/cloudinary.js";
-
-const prisma = new PrismaClient();
 
 /**
  *  @method  PUT
@@ -17,12 +15,18 @@ export const updateProfile = async (
   res: Response
 ): Promise<void> => { 
   try { 
-    if (req.user.id !== req.params.id) {
+    if (!req.user) {
+      res.status(401).json({ message: "Not Authenticated" });
+      return
+    }
+    const userId = req.user.id;
+
+    if (userId !== req.params.id) {
       res.status(404).json({ message: "Profile not found" });
       return
     }
 
-    const profile = await prisma.user.findUnique({ where: { id: req.user.id } }) 
+    const profile = await prisma.user.findUnique({ where: { id: userId } }) 
     if (!profile) {
       res.status(404).json({ message: "Profile not found" });
       return
@@ -30,7 +34,7 @@ export const updateProfile = async (
 
     const {name, bio} = req.body as ProfileInfo
     const updateProfileInfo = await prisma.user.update({
-      where: { id: req.user.id },
+      where: { id: userId },
       data: {
           name,
           bio,
@@ -61,8 +65,14 @@ export const updateProfilePhoto = async (
   res: Response
 ): Promise<void> => { 
   try { 
+    if (!req.user) {
+      res.status(401).json({ message: "Not Authenticated" });
+      return
+    }
+    const userId = req.user.id;
+
     // Check if the user is authorized to update this profile
-    if (req.user.id !== req.params.id) {
+    if (userId !== req.params.id) {
       res.status(403).json({ message: "Unauthorized: You are not allowed to update this profile." });
       return
     }
@@ -79,7 +89,7 @@ export const updateProfilePhoto = async (
       `data:${mimeType};base64,${base64}`,
     );
     // Retrieve the user from the database
-    const profile = await prisma.user.findUnique({ where: { id: req.user.id } }) 
+    const profile = await prisma.user.findUnique({ where: { id: userId } }) 
     if (!profile) {
       res.status(404).json({ message: "User not found" });
       return
@@ -91,7 +101,7 @@ export const updateProfilePhoto = async (
     }
     // Update the user's profile with the new profile picture
     const updatedProfilePhoto = await prisma.user.update({
-      where: { id: req.user.id },
+      where: { id: userId },
       data: {
         profilePicture: {
           publicId: uploadResponse.public_id,
