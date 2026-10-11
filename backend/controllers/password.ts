@@ -5,7 +5,7 @@ import { handleError } from "../utils/common.js";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { getResetPasswordTemplate } from "../utils/htmlTemplate.js";
-import { sendEmail } from "../utils/nodemailer.js";
+import { sendEmail } from "../utils/resend.js";
 import { CLIENT_DOMAIN } from "../utils/constantes.js";
 import { hashToken } from "../utils/hashToken.js";
 
@@ -30,7 +30,11 @@ export const sendResetPasswordLink  = async (req: Request, res: Response): Promi
     // 3. Create a new password reset token
     const rawToken = crypto.randomBytes(32).toString("hex");
     const tokenHash = hashToken(rawToken);
-    await prisma.verificationToken.create({
+    // Invalidate any previous reset token so only the latest one is valid.
+    await prisma.verificationToken.deleteMany({
+      where: { userId: user.id, type: "password_reset" },
+    });
+    const verificationToken = await prisma.verificationToken.create({
       data: {
         userId: user.id,
         tokenHash,
@@ -42,7 +46,15 @@ export const sendResetPasswordLink  = async (req: Request, res: Response): Promi
     const link = `${CLIENT_DOMAIN}/reset-password/${user.id}/${rawToken}`;
     // 5. Generate HTML email content and send the email
     const htmlTemplate = getResetPasswordTemplate(link);
-    await sendEmail(user.email, "Reset Password", htmlTemplate);
+    try {
+      await sendEmail(user.email, "Reset Password", htmlTemplate);
+    } catch (err) {
+      // Roll back the token so a failed email doesn't leave an unusable token behind.
+      await prisma.verificationToken
+        .delete({ where: { id: verificationToken.id } })
+        .catch(() => {});
+      throw err;
+    }
     // 6. Return success response (generic)
     res
       .status(200)

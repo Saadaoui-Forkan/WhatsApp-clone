@@ -63,6 +63,7 @@ const Chat = () => {
               content={message.content}
               createdAt={message.createdAt}
               seen={message.seen}
+              attachment={message.attachment}
             />
           ))
         )}

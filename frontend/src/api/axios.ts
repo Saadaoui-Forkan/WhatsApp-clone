@@ -24,14 +24,32 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Endpoint used to check whether the visitor has an active session.
+// A 401 on it simply means "not logged in" and must not be treated as an expired session.
+const SESSION_CHECK_URL = "/users/me";
+
+// Public auth pages where an unauthenticated 401 is expected and no redirect is needed.
+const AUTH_PAGES = ["/login", "/register", "/forgot-password", "/reset-password"];
+
+const isOnAuthPage = () =>
+  AUTH_PAGES.some((page) => window.location.pathname.startsWith(page));
+
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && originalRequest && !originalRequest.headers["x-retry"]) {
+    const isSessionCheck = originalRequest?.url?.includes(SESSION_CHECK_URL) ?? false;
+
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest.headers["x-retry"] &&
+      !isSessionCheck &&
+      !isOnAuthPage()
+    ) {
       originalRequest.headers["x-retry"] = "true";
-      
+
       // Clear auth store and redirect
       if (clearAuthStore) {
         clearAuthStore();
@@ -39,11 +57,13 @@ api.interceptors.response.use(
         // Fallback if not set
         useAuthStore.getState().setUser(null);
       }
-      
+
       toast.error("Session expired. Please log in again.");
-      
+
       setTimeout(() => {
-        window.location.href = "/login";
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
       }, 1500);
     }
 

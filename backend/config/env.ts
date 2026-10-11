@@ -28,8 +28,11 @@ const envSchema = z.object({
   CLOUDINARY_API_KEY: z.string().min(1, "CLOUDINARY_API_KEY is required"),
   CLOUDINARY_API_SECRET: z.string().min(1, "CLOUDINARY_API_SECRET is required"),
 
-  EMAIL_ADDRESS: z.string().email("EMAIL_ADDRESS must be a valid email address"),
-  EMAIL_PASSWORD: z.string().min(1, "EMAIL_PASSWORD is required"),
+  // Resend (transactional emails for verification & password reset)
+  // EMAIL_ADDRESS is the "from" address: it must be on a domain you verified
+  // in Resend. During the first tests you can use onboarding@resend.dev.
+  EMAIL_ADDRESS: z.string(),
+  RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
 });
 
 const parsed = envSchema.safeParse(process.env);

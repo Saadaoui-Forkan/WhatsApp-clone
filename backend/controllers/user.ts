@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
 import { env, isProduction } from "../config/env.js";
 import crypto from "crypto"
-import { sendEmail } from "../utils/nodemailer.js";
+import { sendEmail } from "../utils/resend.js";
 import { getVerificationEmailTemplate } from "../utils/htmlTemplate.js";
 import { CLIENT_DOMAIN } from "../utils/constantes.js";
 import { hashToken } from "../utils/hashToken.js";

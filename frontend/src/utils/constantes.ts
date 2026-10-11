@@ -1,1 +1,2 @@
-export const defaultAvatar = "https://png.pngtree.com/png-clipart/20200701/original/pngtree-character-default-avatar-png-image_5407167.jpg"
+// Local fallback so the default avatar always loads (no external hotlink/PWA/offline issues).
+export const defaultAvatar = "/default-avatar.jpg";

@@ -12,6 +12,7 @@ import { useAuthStore } from "../store/auth.store";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import { useToggleShow } from "../hooks/useToggleShow";
+import { normalizeUser } from "../utils/helpers";
 
 const LoginPage = () => {
   const { show, toggleVisibility } = useToggleShow();
@@ -25,13 +26,7 @@ const LoginPage = () => {
   ) => {
     mutate(values, {
       onSuccess: (data) => {
-        const { id, name, bio, profilePicture } = data.data
-        setUser({
-          id,
-          name,
-          bio,
-          photoProfile: profilePicture?.secureUrl ?? ""
-        })
+        setUser(normalizeUser(data.data))
         toast.success(data.message)
         navigate('/')
         actions.resetForm()
